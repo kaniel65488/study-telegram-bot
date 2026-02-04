@@ -4,9 +4,9 @@ from telegram.ext import Application, CommandHandler, MessageHandler, filters, C
 import json
 from datetime import datetime, timedelta
 import pytz
+import os
 
-TOKEN = "8573669386:AAFg3_Tq1ecust7Q1b1vmnBzQxXNbI-oGoM"
-
+TOKEN = os.getenv("TOKEN")
 
 # ===================== تحميل الملفات =====================
 
@@ -14,11 +14,9 @@ def load_schedule():
     with open("schedule.json", encoding="utf-8") as f:
         return json.load(f)
 
-
 def load_teachers():
     with open("teachers.json", encoding="utf-8") as f:
         return json.load(f)
-
 
 # ===================== مساعدات الوقت =====================
 
@@ -26,7 +24,6 @@ def get_day_name(offset=0):
     now = datetime.now(pytz.timezone("Africa/Casablanca"))
     target = now + timedelta(days=offset)
     return target.strftime("%A").lower()
-
 
 # ===================== تحويل الأيام =====================
 
@@ -46,7 +43,6 @@ REVERSE_DAYS = {
     "الخميس": "thursday"
 }
 
-
 # ===================== ترتيب المواد =====================
 
 MODULE_ORDER = [
@@ -58,7 +54,6 @@ MODULE_ORDER = [
 "Logique mathématique",
 "Electronique fondamentale"
 ]
-
 
 # ===================== تنسيق الحصص =====================
 
@@ -78,7 +73,6 @@ def format_lessons(lessons):
 \u200F━━━━━━━━━━━━━━━━
 """
     return text
-
 
 # ===================== ماذا أدرس الآن =====================
 
@@ -101,7 +95,6 @@ def get_now_or_next():
 
     return "none", None
 
-
 # ===================== أساتذة حسب النوع =====================
 
 def get_teachers_by(module, lesson_type):
@@ -116,7 +109,6 @@ def get_teachers_by(module, lesson_type):
             result.append(t)
 
     return result
-
 
 # ===================== الواجهة الرئيسية =====================
 
@@ -137,7 +129,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         reply_markup=reply_markup
     )
 
-
 # ===================== معالجة الرسائل =====================
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -145,8 +136,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.message.text
     schedule = load_schedule()
 
-
-    # ===== رجوع ذكي =====
+    # رجوع ذكي
     if text == "رجوع":
 
         stage = context.user_data.get("teacher_stage")
@@ -169,8 +159,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await start(update, context)
         return
 
-
-    # ===== ماذا أدرس الآن =====
+    # ماذا أدرس الآن
     if text == "ماذا سأدرس الآن؟":
 
         status, lesson = get_now_or_next()
@@ -189,8 +178,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(msg)
         return
 
-
-    # ===== جدول اليوم =====
+    # جدول اليوم
     if text == "جدول اليوم":
 
         day = get_day_name(0)
@@ -204,8 +192,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(msg)
         return
 
-
-    # ===== جدول الغد =====
+    # جدول الغد
     if text == "جدول الغد":
 
         day = get_day_name(1)
@@ -219,8 +206,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(msg)
         return
 
-
-    # ===== يوم معين =====
+    # يوم معين
     if text == "جدول يوم معين":
 
         await update.message.reply_text(
@@ -228,8 +214,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
-
-    # لو كتب اسم يوم بالعربية
     if text in REVERSE_DAYS:
 
         eng_day = REVERSE_DAYS[text]
@@ -241,8 +225,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(msg)
         return
 
-
-    # ===== قائمة الأساتذة =====
+    # قائمة الأساتذة
     if text == "قائمة الأساتذة":
 
         keyboard = [[m] for m in MODULE_ORDER]
@@ -257,7 +240,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=reply_markup
         )
         return
-
 
     # اختيار مقياس
     if text in MODULE_ORDER:
@@ -279,9 +261,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
-
-    # ================== الجزء المطلوب (الإيميل الفارغ) ==================
-
+    # عرض الأساتذة
     if text in ["TD", "محاضرة"]:
 
         module = context.user_data.get("chosen_module")
@@ -291,7 +271,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         msg = f"{module} - {text}\n\n"
 
         if not teachers:
-            msg += "لا يوجد حالياً, سيم إضافته عمّا قريب بإذن الله تعالى."
+            msg += "لا يوجد حالياً, سيتم إضافته عمّا قريب بإذن الله تعالى."
         else:
             for t in teachers:
 
@@ -308,11 +288,12 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(msg)
         return
 
-
     await update.message.reply_text("من فضلك استعمل الأزرار 👇")
 
+# ===================== تشغيل Webhook =====================
 
-# ===================== تشغيل =====================
+PORT = int(os.environ.get("PORT", 10000))
+WEBHOOK_URL = os.environ.get("RENDER_EXTERNAL_URL")
 
 def main():
     app = Application.builder().token(TOKEN).build()
@@ -320,9 +301,14 @@ def main():
     app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-    print("Bot is running...")
-    app.run_polling()
+    print("Starting webhook on port", PORT)
 
+    app.run_webhook(
+        listen="0.0.0.0",
+        port=PORT,
+        url_path=TOKEN,
+        webhook_url=f"{WEBHOOK_URL}/{TOKEN}"
+    )
 
 if __name__ == "__main__":
     main()
