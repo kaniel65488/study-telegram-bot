@@ -121,7 +121,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 ]
 
 
-    ]
+    
 
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
 
