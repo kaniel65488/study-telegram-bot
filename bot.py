@@ -248,18 +248,17 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # قائمة الأساتذة
     if text == "قائمة الأساتذة":
 
-        keyboard = [[m] for m in MODULE_ORDER]
-        keyboard.append(["رجوع"])
+    keyboard = build_module_keyboard()
 
-        context.user_data["teacher_stage"] = "choose_module"
+    context.user_data["teacher_stage"] = "choose_module"
 
-        reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
 
-        await update.message.reply_text(
-            "اختر المقياس:",
-            reply_markup=reply_markup
-        )
-        return
+    await update.message.reply_text(
+        "اختر المقياس:",
+        reply_markup=reply_markup
+    )
+    return
 
     # اختيار مقياس
     if text in MODULE_ORDER:
