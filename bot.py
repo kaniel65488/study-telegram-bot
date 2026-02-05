@@ -7,6 +7,56 @@ import pytz
 import os
 
 TOKEN = os.getenv("TOKEN")
+# ===================== حفظ بيانات المستخدمين =====================
+
+USERS_FILE = "users.json"
+PHOTOS_DIR = "profile_photos"
+
+if not os.path.exists(PHOTOS_DIR):
+    os.makedirs(PHOTOS_DIR)
+
+def load_users():
+    if not os.path.exists(USERS_FILE):
+        return {}
+    with open(USERS_FILE, encoding="utf-8") as f:
+        return json.load(f)
+
+def save_users(data):
+    with open(USERS_FILE, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=4)
+
+async def save_user_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    user = update.effective_user
+    users = load_users()
+
+    user_id = str(user.id)
+
+    # جلب صورة البروفايل إن وُجدت
+    photos = await context.bot.get_user_profile_photos(user.id)
+
+    photo_path = users.get(user_id, {}).get("photo_path")
+
+    if photos.total_count > 0:
+        file = await photos.photos[0][-1].get_file()
+
+        photo_path = f"{PHOTOS_DIR}/{user_id}.jpg"
+        await file.download_to_drive(photo_path)
+
+    users[user_id] = {
+        "telegram_id": user.id,
+        "username": user.username,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "photo_path": photo_path,
+        "last_seen": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "first_seen": users.get(user_id, {}).get(
+            "first_seen",
+            datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        )
+    }
+
+    save_users(users)
 
 # ===================== تحميل الملفات =====================
 
@@ -156,6 +206,8 @@ def build_module_keyboard():
 # ===================== معالجة الرسائل =====================
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    await save_user_data(update, context)
 
     text = update.message.text
     schedule = load_schedule()
