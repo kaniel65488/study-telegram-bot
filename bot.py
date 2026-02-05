@@ -246,39 +246,40 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     # قائمة الأساتذة
-    if text == "قائمة الأساتذة":
+if text == "قائمة الأساتذة":
 
-        keyboard = build_module_keyboard()
+    keyboard = build_module_keyboard()
 
-        context.user_data["teacher_stage"] = "choose_module"
+    context.user_data["teacher_stage"] = "choose_module"
 
-        reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
 
-        await update.message.reply_text(
-             "اختر المقياس:",
-             reply_markup=reply_markup
-        )
-         return
+    await update.message.reply_text(
+        "اختر المقياس:",
+        reply_markup=reply_markup
+    )
+    return
 
 
     # اختيار مقياس
-    if text in MODULE_ORDER:
+if text in MODULE_ORDER:
 
-        keyboard = [
-            ["TD", "محاضرة"],
-            ["رجوع"]
-        ]
+    keyboard = [
+        ["TD", "محاضرة"],
+        ["رجوع"]
+    ]
 
-        context.user_data["chosen_module"] = text
-        context.user_data["teacher_stage"] = "choose_type"
+    context.user_data["chosen_module"] = text
+    context.user_data["teacher_stage"] = "choose_type"
 
-        reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
 
-        await update.message.reply_text(
-            f"اختر نوع الحصة لمقياس:\n{text}",
-            reply_markup=reply_markup
-        )
-        return
+    await update.message.reply_text(
+        f"اختر نوع الحصة لمقياس:\n{text}",
+        reply_markup=reply_markup
+    )
+    return
+
 
     # عرض الأساتذة
     if text in ["TD", "محاضرة"]:
