@@ -115,11 +115,12 @@ def get_teachers_by(module, lesson_type):
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     keyboard = [
-        ["ماذا سأدرس الآن؟"],
-        ["جدول اليوم"],
-        ["جدول الغد"],
-        ["جدول يوم معين"],
-        ["قائمة الأساتذة"]
+       keyboard = [
+    ["ماذا سأدرس الآن؟", "جدول اليوم"],
+    ["جدول الغد", "جدول يوم معين"],
+    ["قائمة الأساتذة"]
+]
+
     ]
 
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
