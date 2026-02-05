@@ -156,7 +156,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.message.text
     schedule = load_schedule()
 
-    # رجوع ذكي
+    # ===== رجوع ذكي =====
     if text == "رجوع":
 
         stage = context.user_data.get("teacher_stage")
@@ -179,7 +179,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
 
-    # ماذا أدرس الآن
+    # ===== ماذا أدرس الآن =====
     if text == "ماذا سأدرس الآن؟":
 
         status, lesson = get_now_or_next()
@@ -198,7 +198,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(msg)
         return
 
-    # جدول اليوم
+
+    # ===== جدول اليوم =====
     if text == "جدول اليوم":
 
         day = get_day_name(0)
@@ -212,7 +213,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(msg)
         return
 
-    # جدول الغد
+
+    # ===== جدول الغد =====
     if text == "جدول الغد":
 
         day = get_day_name(1)
@@ -226,7 +228,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(msg)
         return
 
-    # يوم معين
+
+    # ===== يوم معين =====
     if text == "جدول يوم معين":
 
         await update.message.reply_text(
@@ -234,6 +237,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
+
+    # ===== لو كتب يوم صحيح =====
     if text in REVERSE_DAYS:
 
         eng_day = REVERSE_DAYS[text]
@@ -245,7 +250,19 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(msg)
         return
 
-    # قائمة الأساتذة
+
+    # ===== لو كتب يوم غلط =====
+    if any(word in text for word in ["أحد","اثنين","ثلاثاء","أربعاء","خميس"]):
+
+        await update.message.reply_text(
+            "❌ خطأ في كتابة اليوم\n\n"
+            "الصيغ الصحيحة هي:\n"
+            "الأحد\nالاثنين\nالثلاثاء\nالأربعاء\nالخميس"
+        )
+        return
+
+
+    # ===== قائمة الأساتذة =====
     if text == "قائمة الأساتذة":
 
         keyboard = build_module_keyboard()
@@ -261,7 +278,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
 
-        # اختيار مقياس
+    # ===== اختيار مقياس =====
     if text in MODULE_ORDER:
 
         keyboard = [
@@ -281,26 +298,26 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
 
-        # عرض الأساتذة
-        if text in ["TD", "محاضرة"]:
+    # ===== عرض الأساتذة مع الإيميل =====
+    if text in ["TD", "محاضرة"]:
 
-            module = context.user_data.get("chosen_module")
+        module = context.user_data.get("chosen_module")
 
-            teachers = get_teachers_by(module, text)
+        teachers = get_teachers_by(module, text)
 
-            msg = f"{module} - {text}\n\n"
+        msg = f"{module} - {text}\n\n"
 
-            if not teachers:
-                msg += "لا يوجد حالياً, سيتم إضافته عمّا قريب بإذن الله تعالى."
-            else:
-                for t in teachers:
+        if not teachers:
+            msg += "لا يوجد حالياً, سيتم إضافته عمّا قريب بإذن الله تعالى."
+        else:
+            for t in teachers:
 
-                    email = t.get("email")
+                email = t.get("email")
 
-                    if not email or email.strip() == "":
-                        email = "سيتم إضافته عمّا قريب..."
+                if not email or email.strip() == "":
+                    email = "سيتم إضافته عمّا قريب..."
 
-                    msg += f"""
+                msg += f"""
 👤 {t['name']}
 📧 {email}
 """
@@ -308,6 +325,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(msg)
         return
 
+
+    # ===== أي رسالة غريبة =====
     await update.message.reply_text("من فضلك استعمل الأزرار 👇")
 
 # ===================== تشغيل Webhook =====================
