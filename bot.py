@@ -34,6 +34,7 @@ AR_DAYS = {
     "wednesday": "الأربعاء",
     "thursday": "الخميس"
 }
+
 WEEKEND_DAYS = {
     "friday": "الجمعة",
     "saturday": "السبت"
@@ -75,9 +76,9 @@ def format_lessons(lessons):
 """
     return text
 
-# ===================== ماذا أدرس الآن =====================
+# ===================== الدرس الحالي والتالي داخل نفس اليوم =====================
 
-def get_now_or_next():
+def get_current_and_next_today():
     schedule = load_schedule()
 
     now = datetime.now(pytz.timezone("Africa/Casablanca"))
@@ -86,15 +87,18 @@ def get_now_or_next():
 
     today = sorted(schedule.get(day, []), key=lambda x: x["start"])
 
+    current = None
+    next_lesson = None
+
     for l in today:
         if l["start"] <= time_now <= l["end"]:
-            return "current", l
+            current = l
 
-    for l in today:
-        if l["start"] > time_now:
-            return "next", l
+        if l["start"] > time_now and next_lesson is None:
+            next_lesson = l
 
-    return "none", None
+    return current, next_lesson
+
 
 # ===================== أساتذة حسب النوع =====================
 
@@ -116,13 +120,10 @@ def get_teachers_by(module, lesson_type):
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     keyboard = [
-    ["ماذا سأدرس الآن؟", "جدول اليوم"],
-    ["جدول يوم معين", "جدول الغد"],
-    ["قائمة الأساتذة"]
-]
-
-
-    
+        ["جدول الغد", "جدول اليوم"],
+        ["الدرس التالي", "الدرس الحالي"],
+        ["قائمة الأساتذة", "جدول يوم معين"]
+    ]
 
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
 
@@ -130,7 +131,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "السلام عليكم ورحمة الله تعالى وبركاته.\n اختر ما تُريد :",
         reply_markup=reply_markup
     )
-# ===================== معالجة الرسائل =====================
+
+# ===================== لوحة المقاييس =====================
 
 def build_module_keyboard():
     buttons = []
@@ -139,28 +141,26 @@ def build_module_keyboard():
     for i, module in enumerate(MODULE_ORDER):
         row.append(module)
 
-        # كل سطر فيه زرين
         if len(row) == 2:
             buttons.append(row)
             row = []
 
-    # لو بقي زر واحد أخير
     if row:
         buttons.append(row)
 
-    # نضيف زر رجوع في سطر وحده
     buttons.append(["رجوع"])
 
     return buttons
 
 
+# ===================== معالجة الرسائل =====================
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     text = update.message.text
     schedule = load_schedule()
 
-    # ===== رجوع ذكي =====
+    # ===== رجوع =====
     if text == "رجوع":
 
         stage = context.user_data.get("teacher_stage")
@@ -183,21 +183,31 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
 
-    # ===== ماذا أدرس الآن =====
-    if text == "ماذا سأدرس الآن؟":
+    # ===== الدرس الحالي =====
+    if text == "الدرس الحالي":
 
-        status, lesson = get_now_or_next()
+        current, _ = get_current_and_next_today()
 
-        if status == "current":
+        if current:
             msg = "📚 أنت الآن في هذه الحصة:\n"
-            msg += format_lessons([lesson])
-
-        elif status == "next":
-            msg = "⏱ لا توجد حصة الآن\n➡ الحصة القادمة:\n"
-            msg += format_lessons([lesson])
-
+            msg += format_lessons([current])
         else:
-            msg = "✅ انتهت حصص اليوم!"
+            msg = "⏳ لا توجد حصة الآن"
+
+        await update.message.reply_text(msg)
+        return
+
+
+    # ===== الدرس التالي =====
+    if text == "الدرس التالي":
+
+        _, next_lesson = get_current_and_next_today()
+
+        if next_lesson:
+            msg = "➡ الحصة التالية اليوم:\n"
+            msg += format_lessons([next_lesson])
+        else:
+            msg = "✅ لا توجد حصة تالية اليوم"
 
         await update.message.reply_text(msg)
         return
@@ -219,7 +229,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
     # ===== جدول الغد =====
-        # ===== جدول الغد =====
     if text == "جدول الغد":
 
         day = get_day_name(1)
@@ -249,7 +258,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
 
-    # ===== لو كتب يوم صحيح =====
+    # ===== تحقق من اليوم =====
     if text in REVERSE_DAYS:
 
         eng_day = REVERSE_DAYS[text]
@@ -262,7 +271,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
 
-    # ===== لو كتب يوم غلط =====
     if any(word in text for word in ["أحد","اثنين","ثلاثاء","أربعاء","خميس"]):
 
         await update.message.reply_text(
@@ -273,7 +281,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
 
-    # ===== قائمة الأساتذة =====
+    # ===== الأساتذة =====
     if text == "قائمة الأساتذة":
 
         keyboard = build_module_keyboard()
@@ -337,8 +345,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
 
-    # ===== أي رسالة غريبة =====
     await update.message.reply_text("من فضلك استعمل الأزرار 👇")
+
 
 # ===================== تشغيل Webhook =====================
 
