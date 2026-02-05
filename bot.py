@@ -126,8 +126,30 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "السلام عليكم ورحمة الله تعالى وبركاته.\n اختر ما تُريد :",
         reply_markup=reply_markup
     )
-
 # ===================== معالجة الرسائل =====================
+
+def build_module_keyboard():
+    buttons = []
+    row = []
+
+    for i, module in enumerate(MODULE_ORDER):
+        row.append(module)
+
+        # كل سطر فيه زرين
+        if len(row) == 2:
+            buttons.append(row)
+            row = []
+
+    # لو بقي زر واحد أخير
+    if row:
+        buttons.append(row)
+
+    # نضيف زر رجوع في سطر وحده
+    buttons.append(["رجوع"])
+
+    return buttons
+
+
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
@@ -141,8 +163,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         if stage == "choose_type":
 
-            keyboard = [[m] for m in MODULE_ORDER]
-            keyboard.append(["رجوع"])
+            keyboard = build_module_keyboard()
 
             context.user_data["teacher_stage"] = "choose_module"
 
@@ -156,6 +177,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         await start(update, context)
         return
+
 
     # ماذا أدرس الآن
     if text == "ماذا سأدرس الآن؟":
