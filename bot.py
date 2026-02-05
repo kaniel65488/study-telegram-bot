@@ -46,13 +46,10 @@ REVERSE_DAYS = {
 # ===================== ترتيب المواد =====================
 
 MODULE_ORDER = [
-"Algorithmique et structure de données 2",
-"Structure machine 2",
-"Analyse 2",
-"Algèbre 2",
+"Algorithmique et structure de données 2","Structure machine 2",
+"Analyse 2","Algèbre 2",
 "Introduction à l'intelligence artificielle",
-"Logique mathématique",
-"Electronique fondamentale"
+"Logique mathématique","Electronique fondamentale"
 ]
 
 # ===================== تنسيق الحصص =====================
@@ -246,8 +243,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if text in MODULE_ORDER:
 
         keyboard = [
-            ["TD"],
-            ["محاضرة"],
+            ["TD", "محاضرة"],
             ["رجوع"]
         ]
 
