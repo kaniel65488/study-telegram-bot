@@ -246,61 +246,61 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     # قائمة الأساتذة
-if text == "قائمة الأساتذة":
+    if text == "قائمة الأساتذة":
 
-    keyboard = build_module_keyboard()
+        keyboard = build_module_keyboard()
 
-    context.user_data["teacher_stage"] = "choose_module"
+        context.user_data["teacher_stage"] = "choose_module"
 
-    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+        reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
 
-    await update.message.reply_text(
-        "اختر المقياس:",
-        reply_markup=reply_markup
-    )
-    return
-
-
-    # اختيار مقياس
-if text in MODULE_ORDER:
-
-    keyboard = [
-        ["TD", "محاضرة"],
-        ["رجوع"]
-    ]
-
-    context.user_data["chosen_module"] = text
-    context.user_data["teacher_stage"] = "choose_type"
-
-    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
-
-    await update.message.reply_text(
-        f"اختر نوع الحصة لمقياس:\n{text}",
-        reply_markup=reply_markup
-    )
-    return
+        await update.message.reply_text(
+            "اختر المقياس:",
+            reply_markup=reply_markup
+        )
+        return
 
 
-    # عرض الأساتذة
-    if text in ["TD", "محاضرة"]:
+        # اختيار مقياس
+    if text in MODULE_ORDER:
 
-        module = context.user_data.get("chosen_module")
+        keyboard = [
+            ["TD", "محاضرة"],
+            ["رجوع"]
+        ]
 
-        teachers = get_teachers_by(module, text)
+        context.user_data["chosen_module"] = text
+        context.user_data["teacher_stage"] = "choose_type"
 
-        msg = f"{module} - {text}\n\n"
+        reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
 
-        if not teachers:
-            msg += "لا يوجد حالياً, سيتم إضافته عمّا قريب بإذن الله تعالى."
-        else:
-            for t in teachers:
+        await update.message.reply_text(
+            f"اختر نوع الحصة لمقياس:\n{text}",
+            reply_markup=reply_markup
+        )
+        return
 
-                email = t.get("email")
 
-                if not email or email.strip() == "":
-                    email = "سيتم إضافته عمّا قريب..."
+        # عرض الأساتذة
+        if text in ["TD", "محاضرة"]:
 
-                msg += f"""
+            module = context.user_data.get("chosen_module")
+
+            teachers = get_teachers_by(module, text)
+
+            msg = f"{module} - {text}\n\n"
+
+            if not teachers:
+                msg += "لا يوجد حالياً, سيتم إضافته عمّا قريب بإذن الله تعالى."
+            else:
+                for t in teachers:
+
+                    email = t.get("email")
+
+                    if not email or email.strip() == "":
+                        email = "سيتم إضافته عمّا قريب..."
+
+                    msg += f"""
 👤 {t['name']}
 📧 {email}
 """
