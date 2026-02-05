@@ -46,10 +46,10 @@ REVERSE_DAYS = {
 # ===================== ترتيب المواد =====================
 
 MODULE_ORDER = [
-"Algorithmique et structure de données 2","Structure machine 2",
+"Electronique fondamentale","Structure machine 2",
 "Analyse 2","Algèbre 2",
 "Introduction à l'intelligence artificielle",
-"Logique mathématique","Electronique fondamentale"
+"Logique mathématique","Algorithmique et structure de données 2"
 ]
 
 # ===================== تنسيق الحصص =====================
