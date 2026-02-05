@@ -219,8 +219,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
     # ===== جدول الغد =====
-    # ===== جدول الغد =====
-    if text == "جدول الغد":
+     if text == "جدول الغد":
 
         day = get_day_name(1)
 
@@ -243,95 +242,95 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 
-        # ===== يوم معين =====
-        if text == "جدول يوم معين":
+    # ===== يوم معين =====
+    if text == "جدول يوم معين":
 
-            await update.message.reply_text(
-                "اكتب اسم اليوم بالعربية:\n\nالأحد\nالاثنين\nالثلاثاء\nالأربعاء\nالخميس"
-            )
-            return
-
-
-        # ===== لو كتب يوم صحيح =====
-        if text in REVERSE_DAYS:
-
-            eng_day = REVERSE_DAYS[text]
-            lessons = schedule.get(eng_day, [])
-
-            msg = f"📅 جدول يوم {text}:\n"
-            msg += format_lessons(lessons)
-
-            await update.message.reply_text(msg)
-            return
+        await update.message.reply_text(
+            "اكتب اسم اليوم بالعربية:\n\nالأحد\nالاثنين\nالثلاثاء\nالأربعاء\nالخميس"
+        )
+        return
 
 
-        # ===== لو كتب يوم غلط =====
-        if any(word in text for word in ["أحد","اثنين","ثلاثاء","أربعاء","خميس"]):
+    # ===== لو كتب يوم صحيح =====
+    if text in REVERSE_DAYS:
 
-            await update.message.reply_text(
-                "❌ خطأ في كتابة اليوم\n\n"
-                "الصيغ الصحيحة هي:\n"
-                "الأحد\nالاثنين\nالثلاثاء\nالأربعاء\nالخميس"
-            )
-            return
+        eng_day = REVERSE_DAYS[text]
+        lessons = schedule.get(eng_day, [])
 
+        msg = f"📅 جدول يوم {text}:\n"
+        msg += format_lessons(lessons)
 
-        # ===== قائمة الأساتذة =====
-        if text == "قائمة الأساتذة":
-
-            keyboard = build_module_keyboard()
-
-            context.user_data["teacher_stage"] = "choose_module"
-
-            reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
-
-            await update.message.reply_text(
-                "اختر المقياس:",
-                reply_markup=reply_markup
-            )
-            return
+        await update.message.reply_text(msg)
+        return
 
 
-        # ===== اختيار مقياس =====
-        if text in MODULE_ORDER:
+    # ===== لو كتب يوم غلط =====
+    if any(word in text for word in ["أحد","اثنين","ثلاثاء","أربعاء","خميس"]):
 
-            keyboard = [
-                ["TD", "محاضرة"],
-                ["رجوع"]
-            ]
-
-            context.user_data["chosen_module"] = text
-            context.user_data["teacher_stage"] = "choose_type"
-
-            reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
-
-            await update.message.reply_text(
-                f"اختر نوع الحصة لمقياس:\n{text}",
-                reply_markup=reply_markup
-            )
-            return
+        await update.message.reply_text(
+            "❌ خطأ في كتابة اليوم\n\n"
+            "الصيغ الصحيحة هي:\n"
+            "الأحد\nالاثنين\nالثلاثاء\nالأربعاء\nالخميس"
+        )
+        return
 
 
-        # ===== عرض الأساتذة مع الإيميل =====
-        if text in ["TD", "محاضرة"]:
+    # ===== قائمة الأساتذة =====
+    if text == "قائمة الأساتذة":
 
-            module = context.user_data.get("chosen_module")
+        keyboard = build_module_keyboard()
 
-            teachers = get_teachers_by(module, text)
+        context.user_data["teacher_stage"] = "choose_module"
 
-            msg = f"{module} - {text}\n\n"
+        reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
 
-            if not teachers:
-                msg += "لا يوجد حالياً, سيتم إضافته عمّا قريب بإذن الله تعالى."
-            else:
-                for t in teachers:
+        await update.message.reply_text(
+            "اختر المقياس:",
+            reply_markup=reply_markup
+        )
+        return
 
-                    email = t.get("email")
 
-                    if not email or email.strip() == "":
-                        email = "سيتم إضافته عمّا قريب..."
+    # ===== اختيار مقياس =====
+    if text in MODULE_ORDER:
 
-                    msg += f"""
+        keyboard = [
+            ["TD", "محاضرة"],
+            ["رجوع"]
+        ]
+
+        context.user_data["chosen_module"] = text
+        context.user_data["teacher_stage"] = "choose_type"
+
+        reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+
+        await update.message.reply_text(
+            f"اختر نوع الحصة لمقياس:\n{text}",
+            reply_markup=reply_markup
+        )
+        return
+
+
+    # ===== عرض الأساتذة مع الإيميل =====
+    if text in ["TD", "محاضرة"]:
+
+        module = context.user_data.get("chosen_module")
+
+        teachers = get_teachers_by(module, text)
+
+        msg = f"{module} - {text}\n\n"
+
+        if not teachers:
+            msg += "لا يوجد حالياً, سيتم إضافته عمّا قريب بإذن الله تعالى."
+        else:
+            for t in teachers:
+
+                email = t.get("email")
+
+                if not email or email.strip() == "":
+                    email = "سيتم إضافته عمّا قريب..."
+
+                msg += f"""
 👤 {t['name']}
 📧 {email}
 """
