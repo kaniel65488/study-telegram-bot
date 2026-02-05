@@ -219,18 +219,16 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
     # ===== جدول الغد =====
-     if text == "جدول الغد":
+    if text == "جدول الغد":
 
         day = get_day_name(1)
 
-        # لو الغد جمعة أو سبت
         if day in WEEKEND_DAYS:
             ar = WEEKEND_DAYS[day]
             msg = f"📆 الغد {ar}\n\n💤 يوم راحة"
             await update.message.reply_text(msg)
             return
 
-        # غير ذلك يوم دراسي عادي
         lessons = schedule.get(day, [])
         ar_day = AR_DAYS.get(day, day)
 
@@ -239,7 +237,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         await update.message.reply_text(msg)
         return
-
 
 
     # ===== يوم معين =====
@@ -311,7 +308,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
 
-    # ===== عرض الأساتذة مع الإيميل =====
+    # ===== عرض الأساتذة =====
     if text in ["TD", "محاضرة"]:
 
         module = context.user_data.get("chosen_module")
