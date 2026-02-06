@@ -61,11 +61,11 @@ async def save_user_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # ===================== تحميل الملفات =====================
 
 def load_schedule():
-    with open("schedule.json", encoding="utf-8") as f:
+    with open("G12/schedule12.json", encoding="utf-8") as f:
         return json.load(f)
 
 def load_teachers():
-    with open("teachers.json", encoding="utf-8") as f:
+    with open("G12/teachers12.json", encoding="utf-8") as f:
         return json.load(f)
 
 # ===================== مساعدات الوقت =====================
