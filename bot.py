@@ -8,7 +8,7 @@ import os
 
 TOKEN = os.getenv("TOKEN")
 
-# ===================== حفظ بيانات المستخدمين =====================
+# ===================== ملفات المستخدمين =====================
 
 USERS_FILE = "users.json"
 PHOTOS_DIR = "profile_photos"
@@ -16,15 +16,18 @@ PHOTOS_DIR = "profile_photos"
 if not os.path.exists(PHOTOS_DIR):
     os.makedirs(PHOTOS_DIR)
 
+
 def load_users():
     if not os.path.exists(USERS_FILE):
         return {}
     with open(USERS_FILE, encoding="utf-8") as f:
         return json.load(f)
 
+
 def save_users(data):
     with open(USERS_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
+
 
 async def save_user_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
@@ -38,11 +41,9 @@ async def save_user_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if photos.total_count > 0:
         file = await photos.photos[0][-1].get_file()
-
         photo_path = f"{PHOTOS_DIR}/{user_id}.jpg"
         await file.download_to_drive(photo_path)
 
-    # ---- حفظ المجموعة لو كانت مختارة ----
     group = context.user_data.get("group")
 
     users[user_id] = {
@@ -61,7 +62,7 @@ async def save_user_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     save_users(users)
 
-# ===================== تحميل حسب المجموعة =====================
+# ===================== تحميل البيانات حسب المجموعة =====================
 
 def load_schedule(group):
     path = f"G{group}/schedule{group}.json"
@@ -110,25 +111,10 @@ def get_day_name(offset=0):
     target = now + timedelta(days=offset)
     return target.strftime("%A").lower()
 
-AR_DAYS = {
-    "sunday": "الأحد",
-    "monday": "الاثنين",
-    "tuesday": "الثلاثاء",
-    "wednesday": "الأربعاء",
-    "thursday": "الخميس"
-}
 
 WEEKEND_DAYS = {
     "friday": "الجمعة",
     "saturday": "السبت"
-}
-
-REVERSE_DAYS = {
-    "الأحد": "sunday",
-    "الاثنين": "monday",
-    "الثلاثاء": "tuesday",
-    "الأربعاء": "wednesday",
-    "الخميس": "thursday"
 }
 
 MODULE_ORDER = [
@@ -138,7 +124,7 @@ MODULE_ORDER = [
 "Logique mathématique","Algorithmique et structure de données 2"
 ]
 
-# ===================== تنسيق =====================
+# ===================== تنسيق العرض =====================
 
 def format_lessons(lessons):
     if not lessons:
@@ -156,28 +142,6 @@ def format_lessons(lessons):
 ━━━━━━━━━━━━━━━━
 """
     return text
-
-# ===================== الحالي والتالي =====================
-
-def get_current_and_next_today(schedule):
-
-    now = datetime.now(pytz.timezone("Africa/Casablanca"))
-    day = now.strftime("%A").lower()
-    time_now = now.strftime("%H:%M")
-
-    today = sorted(schedule.get(day, []), key=lambda x: x["start"])
-
-    current = None
-    next_lesson = None
-
-    for l in today:
-        if l["start"] <= time_now <= l["end"]:
-            current = l
-
-        if l["start"] > time_now and next_lesson is None:
-            next_lesson = l
-
-    return current, next_lesson
 
 # ===================== اختيار المجموعة =====================
 
@@ -203,8 +167,7 @@ async def show_main_menu(update, context):
 
     keyboard = [
         ["جدول الغد", "جدول اليوم"],
-        ["الدرس التالي", "الدرس الحالي"],
-        ["قائمة الأساتذة", "جدول يوم معين"],
+        ["قائمة الأساتذة"],
         ["تغيير المجموعة"]
     ]
 
@@ -219,7 +182,6 @@ async def show_main_menu(update, context):
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
-    # لو المستخدم مخزّن عندو مجموعة من قبل
     users = load_users()
     user_id = str(update.effective_user.id)
 
@@ -229,7 +191,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await ask_group(update, context)
 
-# ===================== المعالجة =====================
+# ===================== المعالجة الرئيسية =====================
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
@@ -237,7 +199,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     text = update.message.text
 
-    # ---- اختيار المجموعة ----
+    # ===== اختيار المجموعة أول مرة =====
     if "group" not in context.user_data:
 
         if text in [str(i) for i in range(1, 13)]:
@@ -256,6 +218,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     group = context.user_data["group"]
 
+    # ===== تغيير المجموعة =====
     if text == "تغيير المجموعة":
         context.user_data.pop("group", None)
         await ask_group(update, context)
@@ -267,7 +230,26 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("❌ لا يوجد جدول لهذه المجموعة بعد")
         return
 
-    # ===== الأساتذة =====
+    # ===== جدول اليوم =====
+    if text == "جدول اليوم":
+        day = get_day_name(0)
+        msg = "📅 جدول اليوم:\n" + format_lessons(schedule.get(day, []))
+        await update.message.reply_text(msg)
+        return
+
+    # ===== جدول الغد =====
+    if text == "جدول الغد":
+        day = get_day_name(1)
+
+        if day in WEEKEND_DAYS:
+            await update.message.reply_text("💤 يوم راحة")
+            return
+
+        msg = "📆 جدول الغد:\n" + format_lessons(schedule.get(day, []))
+        await update.message.reply_text(msg)
+        return
+
+    # ===== قائمة الأساتذة =====
     if text == "قائمة الأساتذة":
 
         keyboard = []
@@ -285,8 +267,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
         keyboard.append(["رجوع"])
 
-        context.user_data["teacher_stage"] = "choose_module"
-
         reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
 
         await update.message.reply_text(
@@ -295,6 +275,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
+    # ===== اختيار مقياس =====
     if text in MODULE_ORDER:
 
         keyboard = [
@@ -312,6 +293,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
+    # ===== عرض الأساتذة =====
     if text in ["TD", "محاضرة"]:
 
         module = context.user_data.get("chosen_module")
@@ -329,29 +311,9 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(msg)
         return
 
-
-    # ===== باقي الدوال =====
-    if text == "جدول اليوم":
-        day = get_day_name(0)
-        msg = f"📅 جدول اليوم:\n" + format_lessons(schedule.get(day, []))
-        await update.message.reply_text(msg)
-        return
-
-    if text == "جدول الغد":
-        day = get_day_name(1)
-
-        if day in WEEKEND_DAYS:
-            await update.message.reply_text("💤 يوم راحة")
-            return
-
-        msg = f"📆 جدول الغد:\n" + format_lessons(schedule.get(day, []))
-        await update.message.reply_text(msg)
-        return
-
     await update.message.reply_text("من فضلك استعمل الأزرار 👇")
 
-
-# ===================== تشغيل =====================
+# ===================== تشغيل البوت =====================
 
 PORT = int(os.environ.get("PORT", 10000))
 WEBHOOK_URL = os.environ.get("RENDER_EXTERNAL_URL")
