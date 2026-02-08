@@ -91,27 +91,31 @@ def normalize(name):
 # ===================== تحميل البيانات =====================
 
 def load_schedule(group):
-    path = f"G{group}/schedule{group}.json"
 
-    if not os.path.exists(path):
+    base = f"schedule{group}.json"
+
+    # نقلب داخل المجلد بأي شكل كان
+    folder = None
+
+    for d in os.listdir():
+        if d.lower() == f"g{group}".lower():
+            folder = d
+            break
+
+    if not folder:
+        print("FOLDER NOT FOUND FOR GROUP", group)
         return None
 
-    with open(path, encoding="utf-8") as f:
-        return json.load(f)
+    # البحث داخل المجلد عن الملف بأي حالة أحرف
+    for f in os.listdir(folder):
+        if f.lower() == base.lower():
+            path = os.path.join(folder, f)
 
+            with open(path, encoding="utf-8") as file:
+                return json.load(file)
 
-def load_teachers(group):
-
-    path = "teachers_all_groups.json"
-
-    if not os.path.exists(path):
-        return None
-
-    with open(path, encoding="utf-8") as f:
-        all_data = json.load(f)
-
-    return all_data.get(str(group), [])
-
+    print("SCHEDULE FILE NOT FOUND FOR GROUP", group)
+    return None
 
 def get_teachers_by(group, module, lesson_type):
 
