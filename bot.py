@@ -42,12 +42,16 @@ async def save_user_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
         photo_path = f"{PHOTOS_DIR}/{user_id}.jpg"
         await file.download_to_drive(photo_path)
 
+    # ---- حفظ المجموعة لو كانت مختارة ----
+    group = context.user_data.get("group")
+
     users[user_id] = {
         "telegram_id": user.id,
         "username": user.username,
         "first_name": user.first_name,
         "last_name": user.last_name,
         "photo_path": photo_path,
+        "group": group,
         "last_seen": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
         "first_seen": users.get(user_id, {}).get(
             "first_seen",
@@ -145,11 +149,11 @@ def format_lessons(lessons):
     text = ""
     for l in lessons:
         text += f"""
-‏📚  {l['module']}
-‏🎯  {l.get('type','')}
-‏⏰ من {l['start']} إلى {l['end']}
-‏🏫  {l['room']}
-‏━━━━━━━━━━━━━━━━
+📚  {l['module']}
+🎯  {l.get('type','')}
+⏰ من {l['start']} إلى {l['end']}
+🏫  {l['room']}
+━━━━━━━━━━━━━━━━
 """
     return text
 
@@ -214,6 +218,15 @@ async def show_main_menu(update, context):
 # ===================== start =====================
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
+    # لو المستخدم مخزّن عندو مجموعة من قبل
+    users = load_users()
+    user_id = str(update.effective_user.id)
+
+    if user_id in users and users[user_id].get("group"):
+        context.user_data["group"] = users[user_id]["group"]
+        return await show_main_menu(update, context)
+
     await ask_group(update, context)
 
 # ===================== المعالجة =====================
@@ -224,7 +237,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     text = update.message.text
 
-    # اختيار المجموعة أولاً
+    # ---- اختيار المجموعة ----
     if "group" not in context.user_data:
 
         if text in [str(i) for i in range(1, 13)]:
@@ -233,6 +246,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await update.message.reply_text(
                 f"✅ تم اختيار المجموعة {text}"
             )
+
+            await save_user_data(update, context)
 
             return await show_main_menu(update, context)
 
@@ -249,91 +264,92 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     schedule = load_schedule(group)
 
     if schedule is None:
+        await update.message.reply_text("❌ لا يوجد جدول لهذه المجموعة بعد")
+        return
+
+    # ===== الأساتذة =====
+    if text == "قائمة الأساتذة":
+
+        keyboard = []
+        row = []
+
+        for module in MODULE_ORDER:
+            row.append(module)
+
+            if len(row) == 2:
+                keyboard.append(row)
+                row = []
+
+        if row:
+            keyboard.append(row)
+
+        keyboard.append(["رجوع"])
+
+        context.user_data["teacher_stage"] = "choose_module"
+
+        reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+
         await update.message.reply_text(
-            "❌ لا يوجد جدول لهذه المجموعة بعد"
+            "اختر المقياس:",
+            reply_markup=reply_markup
         )
         return
 
-    # الحالي
-    if text == "الدرس الحالي":
+    if text in MODULE_ORDER:
 
-        current, _ = get_current_and_next_today(schedule)
+        keyboard = [
+            ["TD", "محاضرة"],
+            ["رجوع"]
+        ]
 
-        if current:
-            msg = "📚 أنت الآن في هذه الحصة:\n" + format_lessons([current])
+        context.user_data["chosen_module"] = text
+
+        reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+
+        await update.message.reply_text(
+            f"اختر نوع الحصة لمقياس:\n{text}",
+            reply_markup=reply_markup
+        )
+        return
+
+    if text in ["TD", "محاضرة"]:
+
+        module = context.user_data.get("chosen_module")
+
+        teachers = get_teachers_by(group, module, text)
+
+        msg = f"{module} - {text}\n\n"
+
+        if not teachers:
+            msg += "لا يوجد حالياً."
         else:
-            msg = "⏳ لا توجد حصة الآن"
+            for t in teachers:
+                msg += f"\n👤 {t['name']}\n📧 {t.get('email','غير متوفر')}\n"
 
         await update.message.reply_text(msg)
         return
 
-    # التالي
-    if text == "الدرس التالي":
 
-        _, next_lesson = get_current_and_next_today(schedule)
-
-        if next_lesson:
-            msg = "➡ الحصة التالية اليوم:\n" + format_lessons([next_lesson])
-        else:
-            msg = "✅ لا توجد حصة تالية اليوم"
-
-        await update.message.reply_text(msg)
-        return
-
-    # اليوم
+    # ===== باقي الدوال =====
     if text == "جدول اليوم":
-
         day = get_day_name(0)
-        lessons = schedule.get(day, [])
-
-        ar_day = AR_DAYS.get(day, day)
-
-        msg = f"📅 جدول اليوم {ar_day}:\n"
-        msg += format_lessons(lessons)
-
+        msg = f"📅 جدول اليوم:\n" + format_lessons(schedule.get(day, []))
         await update.message.reply_text(msg)
         return
 
-    # الغد
     if text == "جدول الغد":
-
         day = get_day_name(1)
 
         if day in WEEKEND_DAYS:
-            ar = WEEKEND_DAYS[day]
-            msg = f"📆 الغد {ar}\n\n💤 يوم راحة"
-            await update.message.reply_text(msg)
+            await update.message.reply_text("💤 يوم راحة")
             return
 
-        lessons = schedule.get(day, [])
-        ar_day = AR_DAYS.get(day, day)
-
-        msg = f"📆 جدول الغد {ar_day}:\n"
-        msg += format_lessons(lessons)
-
-        await update.message.reply_text(msg)
-        return
-
-    # يوم معيّن
-    if text == "جدول يوم معين":
-
-        await update.message.reply_text(
-            "اكتب اسم اليوم بالعربية:\n\nالأحد\nالاثنين\nالثلاثاء\nالأربعاء\nالخميس"
-        )
-        return
-
-    if text in REVERSE_DAYS:
-
-        eng_day = REVERSE_DAYS[text]
-        lessons = schedule.get(eng_day, [])
-
-        msg = f"📅 جدول يوم {text}:\n"
-        msg += format_lessons(lessons)
-
+        msg = f"📆 جدول الغد:\n" + format_lessons(schedule.get(day, []))
         await update.message.reply_text(msg)
         return
 
     await update.message.reply_text("من فضلك استعمل الأزرار 👇")
+
 
 # ===================== تشغيل =====================
 
@@ -345,8 +361,6 @@ def main():
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
-
-    print("Starting webhook on port", PORT)
 
     app.run_webhook(
         listen="0.0.0.0",
