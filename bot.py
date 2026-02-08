@@ -162,19 +162,26 @@ def get_teachers_by(group, module, lesson_type):
             .lower()
         )
 
-        # ====== منطق جديد واضح ======
+        # ===== منطق الفرز =====
 
         if lesson_type == "TD":
             if "td" in ttype_clean:
                 result.append(t)
 
-        elif lesson_type == "محاضرة":
+        elif lesson_type == "TP":
+            if "tp" in ttype_clean:
+                result.append(t)
 
-            # أي حاجة ما هيش TD نعتبروها محاضرة
-            if "td" not in ttype_clean:
+        elif lesson_type == "محاضرة":
+            if (
+                "محاضر" in ttype_clean or
+                "محاضرة" in ttype_clean or
+                "cours" in ttype_clean
+            ):
                 result.append(t)
 
     return result
+
 
 
 
@@ -352,24 +359,39 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
-    if text in MODULE_ORDER:
+        if text in MODULE_ORDER:
+        
+            # المقاييس اللي عندها TP فقط
+            modules_with_tp = [
+                "Algorithmique et structure de données 2",
+                "Introduction à l'intelligence artificielle"
+            ]
 
-        keyboard = [
-            ["TD", "محاضرة"],
-            ["رجوع"]
-        ]
+            if text in modules_with_tp:
+                keyboard = [
+                    ["TD", "TP"],
+                    ["محاضرة"],
+                    ["رجوع"]
+                ]
+            else:
+                keyboard = [
+                    ["TD", "محاضرة"],
+                    ["رجوع"]
+                ]
 
-        context.user_data["chosen_module"] = text
+            context.user_data["chosen_module"] = text
 
-        reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+            reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
 
-        await update.message.reply_text(
-            f"اختر نوع الحصة لمقياس:\n{text}",
-            reply_markup=reply_markup
-        )
-        return
+            await update.message.reply_text(
+                f"اختر نوع الحصة لمقياس:\n{text}",
+                reply_markup=reply_markup
+            )
+            return
+    
 
-    if text in ["TD", "محاضرة"]:
+
+    if text in ["TD", "محاضرة", "TP"]: 
 
         module = context.user_data.get("chosen_module")
 
