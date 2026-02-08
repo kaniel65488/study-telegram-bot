@@ -1,5 +1,4 @@
-﻿//group6.schedule6
-{
+﻿{
   "sunday": [
     {
       "module": "structure machine 2",
@@ -38,14 +37,14 @@
       "end": "11:00",
       "room": "مدرج 4",
       "type": "محاضرة"
-    }
+    },
     {
       "module": "Analyse 2",
       "start": "11:00",
       "end": "12:30",
       "room": "مدرج 4",
       "type": "محاضرة"
-    }
+    },
     {
       "module": "Logique mathématique mathématique",
       "start": "12:30",
@@ -101,7 +100,7 @@
       "end": "12:30",
       "room": "قاعة 19",
       "type": "TD"
-    }
+    },
     {
       "module": "Algorithmique et structure de données 2",
       "start": "14:00",

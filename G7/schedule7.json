@@ -1,5 +1,4 @@
-﻿//group7.schedule7
-{
+﻿{
   "sunday": [
     {
       "module": "Analyse 2",
@@ -108,7 +107,7 @@
   "thursday": [
     {
       "module": "structure machine 2",
-      "start": "08:90",
+      "start": "08:00",
       "end": "09:30",
       "room": "مدرج 3 ",
       "type": "محاضرة"

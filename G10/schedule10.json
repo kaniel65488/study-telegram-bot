@@ -1,5 +1,4 @@
-﻿//group10.schedule10
-{
+﻿{
   "sunday": [
     {
       "module": "Algorithmique et structure de données 2",
@@ -107,7 +106,7 @@
   "thursday": [
     {
       "module": "structure machine 2",
-      "start": "08:90",
+      "start": "08:00",
       "end": "09:30",
       "room": "مدرج 3 ",
       "type": "محاضرة"
