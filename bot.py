@@ -153,13 +153,30 @@ def get_teachers_by(group, module, lesson_type):
 
         ttype = t.get("type","")
 
-        if lesson_type == "TD" and "TD" in ttype:
-            result.append(t)
+        # تنظيف التشكيل
+        ttype_clean = (
+            ttype
+            .replace("ُ","")
+            .replace("َ","")
+            .replace("ِ","")
+            .lower()
+        )
 
-        elif lesson_type == "محاضرة" and ("محاضر" in ttype or "محاضرة" in ttype):
-            result.append(t)
+        # ====== منطق جديد واضح ======
+
+        if lesson_type == "TD":
+            if "td" in ttype_clean:
+                result.append(t)
+
+        elif lesson_type == "محاضرة":
+
+            # أي حاجة ما هيش TD نعتبروها محاضرة
+            if "td" not in ttype_clean:
+                result.append(t)
 
     return result
+
+
 
 
 # ===================== الوقت =====================
