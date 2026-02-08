@@ -117,6 +117,22 @@ def load_schedule(group):
     print("SCHEDULE FILE NOT FOUND FOR GROUP", group)
     return None
 
+def load_teachers(group):
+
+    try:
+        with open("teachers_all_groups.json", encoding="utf-8-sig") as f:
+            all_data = json.load(f)
+
+        return all_data.get(str(group), [])
+
+    except Exception as e:
+        print("TEACHERS LOAD ERROR:", e)
+        return []
+
+
+
+
+
 def get_teachers_by(group, module, lesson_type):
 
     teachers = load_teachers(group)
@@ -140,10 +156,11 @@ def get_teachers_by(group, module, lesson_type):
         if lesson_type == "TD" and "TD" in ttype:
             result.append(t)
 
-        elif lesson_type == "محاضرة" and "محاضر" in ttype:
+        elif lesson_type == "محاضرة" and ("محاضر" in ttype or "محاضرة" in ttype):
             result.append(t)
 
     return result
+
 
 # ===================== الوقت =====================
 
