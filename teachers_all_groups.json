@@ -1,0 +1,1213 @@
+{
+  "1": [
+    {
+      "name": "كيموش عبد القادر",
+      "module": "ASD 2",
+      "type": "مُحاضر",
+      "email": "a.kimouche@univ-mila.dz",
+      "email2": "kimouche.abdelkader@gmail.com"
+    },
+    {
+      "name": "عطية مُراد",
+      "module": "MS 2",
+      "type": "مُحاضر",
+      "email": "a.mourad@univ-mila.dz",
+      "email2": "a.mourad@centre-univ-mila.dz"
+    },
+    {
+      "name": "زينب حافي راسو",
+      "module": "Analyse 2",
+      "type": "مُحاضرة",
+      "email": "z.hafirassou@centre-univ-mila.dz",
+      "email2": "zineb.hafi26@gmail.com",
+      "email3": "z.hafirassou@univ-mila.dz"
+    },
+    {
+      "name": " كسيس محمد",
+      "module": "Algèbre 2",
+      "type": "مُحاضر",
+      "email": "m.kecies@univ-mila.dz",
+      "email2": "m.kecies@centre-univ-mila.dz"
+    },
+    {
+      "name": "مخيلف خديجة",
+      "module": "Logique mathématique",
+      "type": "مُحاضرة",
+      "email": "khedidja.mekhilef@univ-constantine2.dz"
+    },
+    {
+      "name": "صوادق رزيقة",
+      "module": "Electronique fondamentale",
+      "type": "مُحاضرة",
+      "email": "r.souadek@univ-mila.dz",
+      "email2": "r.souadek@centre-univ-mila.dz"
+    },
+    {
+      "name": "حاجي عثمان",
+      "module": "Introduction à l'intelligence artificielle",
+      "type": "مُحاضر",
+      "email": "a.hadji@centre-univ-mila.dz"
+    },
+    {
+      "name": "بخوش معمر",
+      "module": "ASD 2",
+      "type": "أعمال موجهة (TD)",
+      "email": "m.bekhouche@univ-mila.dz",
+      "email2": "m.bekhouche@centre-univ-mila.dz",
+      "email3": "maamar.bekh@gmail.com"
+    },
+    {
+      "name": "مٌراد عطية",
+      "module": "MS 2",
+      "type": "أعمال موجهة (TD)",
+      "email": "a.mourad@univ-mila.dz",
+      "email2": "a.mourad@centre-univ-mila.dz"
+    },
+    {
+      "name": "محزم علال",
+      "module": "Analyse 2",
+      "type": "أعمال موجهة (TD)",
+      "email": "a.mehazzem@univ-mila.dz",
+      "email2": "a.mehazzem@centre-univ-mila.dz"
+    },
+    {
+      "name": "حداد نبيلة",
+      "module": "Algèbre 2",
+      "type": "أعمال موجهة (TD)",
+      "email": "n.haddad@univ-mila.dz",
+      "email2": "n.haddad@centre-univ-mila.dz"
+    },
+    {
+      "name": "مخيلف خديجة",
+      "module": "Logique mathématique",
+      "type": "أعمال موجهة (TD)",
+      "email": "khedidja.mekhilef@univ-constantine2.dz"
+    },
+    {
+      "name": "سميرة بورارة",
+      "module": "Electronique fondamentale",
+      "type": "أعمال موجهة (TD)",
+      "email": "bousamira611@gmail.com"
+    },
+    {
+      "name": "حاجي عثمان",
+      "module": "Introduction à l'intelligence artificielle",
+      "type": "أعمال تطبيقية (TP)",
+      "email": "a.hadji@centre-univ-mila.dz"
+    },
+    {
+      "name": "توتة مريم",
+      "module": "ASD 2",
+      "type": "أعمال تطبيقية (TP)",
+      "email": "meriem.touta@univ-mila.dz",
+      "email2": "meriem.touta@centre-univ-mila.dz"
+    }
+  ],
+  "2": [
+    {
+      "name": "كيموش عبد القادر",
+      "module": "ASD 2",
+      "type": "مُحاضر",
+      "email": "a.kimouche@univ-mila.dz",
+      "email2": "kimouche.abdelkader@gmail.com"
+    },
+    {
+      "name": "عطية مُراد",
+      "module": "MS 2",
+      "type": "مُحاضر",
+      "email": "a.mourad@univ-mila.dz",
+      "email2": "a.mourad@centre-univ-mila.dz"
+    },
+    {
+      "name": "زينب حافي راسو",
+      "module": "Analyse 2",
+      "type": "مُحاضرة",
+      "email": "z.hafirassou@centre-univ-mila.dz",
+      "email2": "zineb.hafi26@gmail.com",
+      "email3": "z.hafirassou@univ-mila.dz"
+    },
+    {
+      "name": "كسيس محمد",
+      "module": "Algèbre 2",
+      "type": "مُحاضر",
+      "email": "m.kecies@univ-mila.dz",
+      "email2": "m.kecies@centre-univ-mila.dz"
+    },
+    {
+      "name": "مخيلف خديجة",
+      "module": "Logique mathématique",
+      "type": "مُحاضرة",
+      "email": "khedidja.mekhilef@univ-constantine2.dz"
+    },
+    {
+      "name": "صوادق رزيقة",
+      "module": "Electronique fondamentale",
+      "type": "مُحاضرة",
+      "email": "r.souadek@univ-mila.dz",
+      "email2": "r.souadek@centre-univ-mila.dz"
+    },
+    {
+      "name": "حاجي عثمان",
+      "module": "Introduction à l'intelligence artificielle",
+      "type": "مُحاضر",
+      "email": "a.hadji@centre-univ-mila.dz"
+    },
+    {
+      "name": "بخوش معمر",
+      "module": "ASD 2",
+      "type": "أعمال موجهة (TD)",
+      "email": "m.bekhouche@univ-mila.dz"
+    },
+    {
+      "name": "مُراد عطية",
+      "module": "MS 2",
+      "type": "أعمال موجهة (TD)",
+      "email": "a.mourad@univ-mila.dz"
+    },
+    {
+      "name": "بوفلغة نبيلة",
+      "module": "Analyse 2",
+      "type": "أعمال موجهة (TD)",
+      "email": "n.boufelgha@centre-univ-mila.dz",
+      "email2": "n.boufelgha@univ-mila.dz"
+    },
+    {
+      "name": "حداد نبيلة",
+      "module": "Algèbre 2",
+      "type": "أعمال موجهة (TD)",
+      "email": "n.haddad@univ-mila.dz",
+      "email2": "n.haddad@centre-univ-mila.dz"
+    },
+    {
+      "name": "طلعي مريم ",
+      "module": "Logique mathématique",
+      "type": "أعمال موجهة (TD)",
+      "email": "m.talai@univ-mila.dz",
+      "email2": "m.talai@centre-univ-mila.dz"
+    },
+    {
+      "name": "صوادق رزيقة",
+      "module": "Electronique fondamentale",
+      "type": "أعمال موجهة (TD)",
+      "email": "r.souadek@univ-mila.dz",
+      "email2": "r.souadek@centre-univ-mila.dz"
+    },
+    {
+      "name": "بن لشهب أ",
+      "module": "Introduction à l'intelligence artificielle",
+      "type": "أعمال تطبيقية (TP)",
+      "email": "/"
+    },
+    {
+      "name": " مسكين م",
+      "module": "ASD 2",
+      "type": "أعمال تطبيقية (TP)",
+      "email": "/"
+    }
+  ],
+  "3": [
+    {
+      "name": "كيموش عبد القادر",
+      "module": "ASD 2",
+      "type": "مُحاضر",
+      "email": "a.kimouche@univ-mila.dz",
+      "email2": "kimouche.abdelkader@gmail.com"
+    },
+    {
+      "name": "عطية مُراد",
+      "module": "MS 2",
+      "type": "مُحاضر",
+      "email": "a.mourad@univ-mila.dz",
+      "email2": "a.mourad@centre-univ-mila.dz"
+    },
+    {
+      "name": "زينب حافي راسو",
+      "module": "Analyse 2",
+      "type": "مُحاضرة",
+      "email": "z.hafirassou@centre-univ-mila.dz",
+      "email2": "zineb.hafi26@gmail.com",
+      "email3": "z.hafirassou@univ-mila.dz"
+    },
+    {
+      "name": " كسيس محمد",
+      "module": "Algèbre 2",
+      "type": "مُحاضر",
+      "email": "m.kecies@univ-mila.dz",
+      "email2": "m.kecies@centre-univ-mila.dz"
+    },
+    {
+      "name": "مخيلف خديجة",
+      "module": "Logique mathématique",
+      "type": "مُحاضرة",
+      "email": "khedidja.mekhilef@univ-constantine2.dz"
+    },
+    {
+      "name": "صوادق رزيقة",
+      "module": "Electronique fondamentale",
+      "type": "مُحاضرة",
+      "email": "r.souadek@univ-mila.dz",
+      "email2": "r.souadek@centre-univ-mila.dz"
+    },
+    {
+      "name": "حاجي عثمان",
+      "module": "Introduction à l'intelligence artificielle",
+      "type": "مُحاضر",
+      "email": "a.hadji@centre-univ-mila.dz"
+    },
+    {
+      "name": "بخوش معمر",
+      "module": "ASD 2",
+      "type": "أعمال موجهة (TD)",
+      "email": "m.bekhouche@univ-mila.dz"
+    },
+    {
+      "name": "زياني",
+      "module": "MS 2",
+      "type": "أعمال موجهة (TD)",
+      "email": "/"
+    },
+    {
+      "name": "أحمد يحيى",
+      "module": "Analyse 2",
+      "type": "أعمال موجهة (TD)",
+      "email1": "r.ahmedyahia@univ-mila.dz",
+      "email2": "r.ahmedyahia@centre-univ-mila.dz"
+    },
+    {
+      "name": "حداد نبيلة",
+      "module": "Algèbre 2",
+      "type": "أعمال موجهة (TD)",
+      "email1": "n.haddad@univ-mila.dz",
+      "email2": "n.haddad@centre-univ-mila.dz"
+    },
+    {
+      "name": "طلعي مريم ",
+      "module": "Logique mathématique",
+      "type": "أعمال موجهة (TD)",
+      "email1": "m.talai@univ-mila.dz",
+      "email2": "m.talai@centre-univ-mila.dz"
+    },
+    {
+      "name": "سميرة بورارة",
+      "module": "Electronique fondamentale",
+      "type": "أعمال موجهة (TD)",
+      "email": "bousamira611@gmail.com"
+    },
+    {
+      "name": "حاجي عثمان",
+      "module": "Introduction à l'intelligence artificielle",
+      "type": "أعمال تطبيقية (TP)",
+      "email": "a.hadji@centre-univ-mila.dz"
+    },
+    {
+      "name": "شلوش ن",
+      "module": "ASD 2",
+      "type": "أعمال تطبيقية (TP)",
+      "email": "/"
+    }
+  ],
+  "4": [
+    {
+      "name": "كيموش عبد القادر",
+      "module": "ASD 2",
+      "type": "مُحاضر",
+      "email": "a.kimouche@univ-mila.dz",
+      "email2": "kimouche.abdelkader@gmail.com"
+    },
+    {
+      "name": "عطية مُراد",
+      "module": "MS 2",
+      "type": "مُحاضر",
+      "email": "a.mourad@univ-mila.dz",
+      "email2": "a.mourad@centre-univ-mila.dz"
+    },
+    {
+      "name": "زينب حافي راسو",
+      "module": "Analyse 2",
+      "type": "مُحاضرة",
+      "email": "z.hafirassou@centre-univ-mila.dz",
+      "email2": "zineb.hafi26@gmail.com",
+      "email3": "z.hafirassou@univ-mila.dz"
+    },
+    {
+      "name": " كسيس محمد",
+      "module": "Algèbre 2",
+      "type": "مُحاضر",
+      "email": "m.kecies@univ-mila.dz",
+      "email2": "m.kecies@centre-univ-mila.dz"
+    },
+    {
+      "name": "مخيلف خديجة",
+      "module": "Logique mathématique",
+      "type": "مُحاضرة",
+      "email": "khedidja.mekhilef@univ-constantine2.dz"
+    },
+    {
+      "name": "صوادق رزيقة",
+      "module": "Electronique fondamentale",
+      "type": "مُحاضرة",
+      "email": "r.souadek@univ-mila.dz",
+      "email2": "r.souadek@centre-univ-mila.dz"
+    },
+    {
+      "name": "حاجي عثمان",
+      "module": "Introduction à l'intelligence artificielle",
+      "type": "مُحاضر",
+      "email": "a.hadji@centre-univ-mila.dz"
+    },
+    {
+      "name": "بخوش معمر",
+      "module": "ASD 2",
+      "type": "أعمال موجهة (TD)",
+      "email1": "m.bekhouche@univ-mila.dz",
+      "email2": "m.bekhouche@centre-univ-mila.dz",
+      "email3": "maamar.bekh@gmail.com"
+    },
+    {
+      "name": "زياني",
+      "module": "MS 2",
+      "type": "أعمال موجهة (TD)",
+      "email": "/"
+    },
+    {
+      "name": "بوالدبان زينب",
+      "module": "Analyse 2",
+      "type": "أعمال موجهة (TD)",
+      "email1": "z.boudebane@univ-mila.dz",
+      "email2": "z.boudebane@centre-univ-mila.dz",
+      "email3": "boudebanezineb@gmail.com"
+    },
+    {
+      "name": "داوي أمينة",
+      "module": "Algèbre 2",
+      "type": "أعمال موجهة (TD)",
+      "email1": "a.daoui@univ-mila.dz",
+      "email2": "a.daoui@centre-univ-mila.dz"
+    },
+    {
+      "name": "طلعي مريم ",
+      "module": "Logique mathématique",
+      "type": "أعمال موجهة (TD)",
+       "email": "m.talai@univ-mila.dz",
+      "email2": "m.talai@centre-univ-mila.dz"
+    },
+    {
+      "name": "سميرة بورارة",
+      "module": "Electronique fondamentale",
+      "type": "أعمال موجهة (TD)",
+      "email": "bousamira611@gmail.com"
+    },
+    {
+      "name": "غربوج ش",
+      "module": "Introduction à l'intelligence artificielle",
+      "type": "أعمال تطبيقية (TP)",
+      "email": "/"
+    },
+    {
+      "name": "بوسنة ن",
+      "module": "ASD 2",
+      "type": "أعمال تطبيقية (TP)",
+      "email": "/"
+    }
+  ],
+  "5": [
+    {
+      "name": "كيموش عبد القادر",
+      "module": "ASD 2",
+      "type": "مُحاضر",
+      "email": "a.kimouche@univ-mila.dz",
+      "email2": "kimouche.abdelkader@gmail.com"
+    },
+    {
+      "name": "عطية مُراد",
+      "module": "MS 2",
+      "type": "مُحاضر",
+      "email": "a.mourad@univ-mila.dz",
+      "email2": "a.mourad@centre-univ-mila.dz"
+    },
+    {
+      "name": "زينب حافي راسو",
+      "module": "Analyse 2",
+      "type": "مُحاضرة",
+      "email": "z.hafirassou@centre-univ-mila.dz",
+      "email2": "zineb.hafi26@gmail.com",
+      "email3": "z.hafirassou@univ-mila.dz"
+    },
+    {
+      "name": " كسيس محمد",
+      "module": "Algèbre 2",
+      "type": "مُحاضر",
+      "email": "m.kecies@univ-mila.dz",
+      "email2": "m.kecies@centre-univ-mila.dz"
+    },
+    {
+      "name": "مخيلف خديجة",
+      "module": "Logique mathématique",
+      "type": "مُحاضرة",
+      "email": "khedidja.mekhilef@univ-constantine2.dz"
+    },
+    {
+      "name": "صوادق رزيقة",
+      "module": "Electronique fondamentale",
+      "type": "مُحاضرة",
+      "email": "r.souadek@univ-mila.dz",
+      "email2": "r.souadek@centre-univ-mila.dz"
+    },
+    {
+      "name": "حاجي عثمان",
+      "module": "Introduction à l'intelligence artificielle",
+      "type": "مُحاضر",
+      "email": "a.hadji@centre-univ-mila.dz"
+    },
+    {
+      "name": "بخوش معمر",
+      "module": "ASD 2",
+      "type": "أعمال موجهة (TD)",
+      "email": "m.bekhouche@univ-mila.dz"
+    },
+    {
+      "name": "عصام الذيب",
+      "module": "MS 2",
+      "type": "أعمال موجهة (TD)",
+      "email": "aissam.dib@univ-mila.dz",
+      "email2": "aissam.dib@centre-univ-mila.dz"
+
+    },
+    {
+      "name": "بوالدبان زينب",
+      "module": "Analyse 2",
+      "type": "أعمال موجهة (TD)",
+      "email1": "z.boudebane@univ-mila.dz",
+      "email2": "z.boudebane@centre-univ-mila.dz",
+      "email3": "boudebanezineb@gmail.com"
+    },
+    {
+      "name": "لعويرة وداد",
+      "module": "Algèbre 2",
+      "type": "أعمال موجهة (TD)",
+      "email1": "w.laouira@univ-mila.dz",
+      "email2": "w.laouira@centre-univ-mila.dz"
+    },
+    {
+      "name": "بوعليطة ندى / نوال",
+      "module": "Logique mathématique",
+      "type": "أعمال موجهة (TD)",
+      "email": "/"
+    },
+    {
+      "name": "سميرة بورارة",
+      "module": "Electronique fondamentale",
+      "type": "أعمال موجهة (TD)",
+      "email": "bousamira611@gmail.com"
+    },
+    {
+      "name": "حاجي عثمان",
+      "module": "Introduction à l'intelligence artificielle",
+      "type": "أعمال تطبيقية (TP)",
+      "email": "a.hadji@centre-univ-mila.dz"
+    },
+    {
+      "name": "بوسنة ن",
+      "module": "ASD 2",
+      "type": "أعمال تطبيقية (TP)",
+      "email": "/"
+    }
+  ],
+  "6": [
+    {
+      "name": "كيموش عبد القادر",
+      "module": "ASD 2",
+      "type": "مُحاضر",
+      "email": "a.kimouche@univ-mila.dz",
+      "email2": "kimouche.abdelkader@gmail.com"
+    },
+    {
+      "name": "عطية مُراد",
+      "module": "MS 2",
+      "type": "مُحاضر",
+      "email": "a.mourad@univ-mila.dz",
+      "email2": "a.mourad@centre-univ-mila.dz"
+    },
+    {
+      "name": "زينب حافي راسو",
+      "module": "Analyse 2",
+      "type": "مُحاضرة",
+      "email": "z.hafirassou@centre-univ-mila.dz",
+      "email2": "zineb.hafi26@gmail.com",
+      "email3": "z.hafirassou@univ-mila.dz"
+    },
+    {
+      "name": " كسيس محمد",
+      "module": "Algèbre 2",
+      "type": "مُحاضر",
+      "email": "m.kecies@univ-mila.dz",
+      "email2": "m.kecies@centre-univ-mila.dz"
+    },
+    {
+      "name": "مخيلف خديجة",
+      "module": "Logique mathématique",
+      "type": "مُحاضرة",
+      "email": "khedidja.mekhilef@univ-constantine2.dz"
+    },
+    {
+      "name": "صوادق رزيقة",
+      "module": "Electronique fondamentale",
+      "type": "مُحاضرة",
+      "email": "r.souadek@univ-mila.dz",
+      "email2": "r.souadek@centre-univ-mila.dz"
+    },
+    {
+      "name": "حاجي عثمان",
+      "module": "Introduction à l'intelligence artificielle",
+      "type": "مُحاضر",
+      "email": "a.hadji@centre-univ-mila.dz"
+    },
+    {
+      "name": "عديل مرابط",
+      "module": "ASD 2",
+      "type": "أعمال موجهة (TD)",
+      "email1": "a.mrabete@centre-univ-mila.dz",
+      "email2":"merabet.adil@gmail.com",
+      "email3":"a.merabet@univ-mila.dz"
+    },
+    {
+      "name": "عصام الذيب",
+      "module": "MS 2",
+      "type": "أعمال موجهة (TD)",
+      "email": "aissam.dib@univ-mila.dz",
+      "email2": "aissam.dib@centre-univ-mila.dz"
+    },
+    {
+      "name": "بوفلغة نبيلة",
+      "module": "Analyse 2",
+      "type": "أعمال موجهة (TD)",
+     "email": "n.boufelgha@centre-univ-mila.dz",
+"email2": "n.boufelgha@univ-mila.dz"
+    },
+    {
+      "name": "لعويرة وداد",
+      "module": "Algèbre 2",
+      "type": "أعمال موجهة (TD)",
+     "email1": "w.laouira@univ-mila.dz",
+ "email2": "w.laouira@centre-univ-mila.dz"
+    },
+    {
+      "name": "طلعي مريم ",
+      "module": "Logique mathématique",
+      "type": "أعمال موجهة (TD)",
+     "email": "m.talai@univ-mila.dz",
+"email2": "m.talai@centre-univ-mila.dz"
+    },
+    {
+      "name": "بولعظام",
+      "module": "Electronique fondamentale",
+      "type": "أعمال موجهة (TD)",
+      "email": "/"
+    },
+    {
+      "name": "عسكري ن",
+      "module": "Introduction à l'intelligence artificielle",
+      "type": "أعمال تطبيقية (TP)",
+      "email": "/"
+    },
+    {
+      "name": "توتة مريم",
+      "module": "ASD 2",
+      "type": "أعمال تطبيقية (TP)",
+      "email": "meriem.touta@univ-mila.dz",
+      "email2": "meriem.touta@centre-univ-mila.dz"
+    }
+  ],
+  "7": [
+    {
+      "name": "كيموش عبد القادر",
+      "module": "ASD 2",
+      "type": "مُحاضر",
+      "email": "a.kimouche@univ-mila.dz",
+      "email2": "kimouche.abdelkader@gmail.com"
+    },
+    {
+      "name": "عطية مُراد",
+      "module": "MS 2",
+      "type": "مُحاضر",
+      "email": "a.mourad@univ-mila.dz",
+      "email2": "a.mourad@centre-univ-mila.dz"
+    },
+    {
+      "name": "زينب حافي راسو",
+      "module": "Analyse 2",
+      "type": "مُحاضرة",
+      "email": "z.hafirassou@centre-univ-mila.dz",
+      "email2": "zineb.hafi26@gmail.com",
+      "email3": "z.hafirassou@univ-mila.dz"
+    },
+    {
+      "name": " كسيس محمد",
+      "module": "Algèbre 2",
+      "type": "مُحاضر",
+      "email": "m.kecies@univ-mila.dz",
+      "email2": "m.kecies@centre-univ-mila.dz"
+    },
+    {
+      "name": "مخيلف خديجة",
+      "module": "Logique mathématique",
+      "type": "مُحاضرة",
+      "email": "khedidja.mekhilef@univ-constantine2.dz"
+    },
+    {
+      "name": "صوادق رزيقة",
+      "module": "Electronique fondamentale",
+      "type": "مُحاضرة",
+      "email": "r.souadek@univ-mila.dz",
+      "email2": "r.souadek@centre-univ-mila.dz"
+    },
+    {
+      "name": "حاجي عثمان",
+      "module": "Introduction à l'intelligence artificielle",
+      "type": "مُحاضر",
+      "email": "a.hadji@centre-univ-mila.dz"
+    },
+    {
+      "name": "بخوش معمر",
+      "module": "ASD 2",
+      "type": "أعمال موجهة (TD)",
+      "email": "m.bekhouche@univ-mila.dz",
+ "email2": "m.bekhouche@centre-univ-mila.dz",
+ "email3": "maamar.bekh@gmail.com"
+    },
+    {
+      "name": "مُراد عطية",
+      "module": "MS 2",
+      "type": "أعمال موجهة (TD)",
+       "email": "a.mourad@univ-mila.dz",
+ "email2": "a.mourad@centre-univ-mila.dz"
+    },
+    {
+      "name": "بوفلغة نبيلة",
+      "module": "Analyse 2",
+      "type": "أعمال موجهة (TD)",
+     "email": "n.boufelgha@centre-univ-mila.dz",
+"email2": "n.boufelgha@univ-mila.dz"
+    },
+    {
+      "name": "محمد كسيس",
+      "module": "Algèbre 2",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "مخيلف خديجة",
+      "module": "Logique mathématique",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "سميرة بورارة",
+      "module": "Electronique fondamentale",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "عسكري ن",
+      "module": "Introduction à l'intelligence artificielle",
+      "type": "أعمال تطبيقية (TP)",
+      "email": ""
+    },
+    {
+      "name": "توتة مريم",
+      "module": "ASD 2",
+      "type": "أعمال تطبيقية (TP)",
+      "email": ""
+    }
+  ],
+  "8": [
+    {
+      "name": "كيموش عبد القادر",
+      "module": "ASD 2",
+      "type": "مُحاضر",
+      "email": "a.kimouche@univ-mila.dz",
+      "email2": "kimouche.abdelkader@gmail.com"
+    },
+    {
+      "name": "عطية مُراد",
+      "module": "MS 2",
+      "type": "مُحاضر",
+      "email": "a.mourad@univ-mila.dz",
+      "email2": "a.mourad@centre-univ-mila.dz"
+    },
+    {
+      "name": "زينب حافي راسو",
+      "module": "Analyse 2",
+      "type": "مُحاضرة",
+      "email": "z.hafirassou@centre-univ-mila.dz",
+      "email2": "zineb.hafi26@gmail.com",
+      "email3": "z.hafirassou@univ-mila.dz"
+    },
+    {
+      "name": " كسيس محمد",
+      "module": "Algèbre 2",
+      "type": "مُحاضر",
+      "email": "m.kecies@univ-mila.dz",
+      "email2": "m.kecies@centre-univ-mila.dz"
+    },
+    {
+      "name": "مخيلف خديجة",
+      "module": "Logique mathématique",
+      "type": "مُحاضرة",
+      "email": "khedidja.mekhilef@univ-constantine2.dz"
+    },
+    {
+      "name": "صوادق رزيقة",
+      "module": "Electronique fondamentale",
+      "type": "مُحاضرة",
+      "email": "r.souadek@univ-mila.dz",
+      "email2": "r.souadek@centre-univ-mila.dz"
+    },
+    {
+      "name": "حاجي عثمان",
+      "module": "Introduction à l'intelligence artificielle",
+      "type": "مُحاضر",
+      "email": "a.hadji@centre-univ-mila.dz"
+    },
+    {
+      "name": "شريف بن علي ",
+      "module": "ASD 2",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "عصام الذيب",
+      "module": "MS 2",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "بوفلغة نبيلة",
+      "module": "Analyse 2",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "محمد كسيس",
+      "module": "Algèbre 2",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "طلعي مريم ",
+      "module": "Logique mathématique",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "موراس ن",
+      "module": "Electronique fondamentale",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "زقيوق منيرة",
+      "module": "Introduction à l'intelligence artificielle",
+      "type": "أعمال تطبيقية (TP)",
+      "email": ""
+    },
+    {
+      "name": "شلوش ن",
+      "module": "ASD 2",
+      "type": "أعمال تطبيقية (TP)",
+      "email": ""
+    }
+  ],
+  "9": [
+    {
+      "name": "كيموش عبد القادر",
+      "module": "ASD 2",
+      "type": "مُحاضر",
+      "email": "a.kimouche@univ-mila.dz",
+      "email2": "kimouche.abdelkader@gmail.com"
+    },
+    {
+      "name": "عطية مُراد",
+      "module": "MS 2",
+      "type": "مُحاضر",
+      "email": "a.mourad@univ-mila.dz",
+      "email2": "a.mourad@centre-univ-mila.dz"
+    },
+    {
+      "name": "زينب حافي راسو",
+      "module": "Analyse 2",
+      "type": "مُحاضرة",
+      "email": "z.hafirassou@centre-univ-mila.dz",
+      "email2": "zineb.hafi26@gmail.com",
+      "email3": "z.hafirassou@univ-mila.dz"
+    },
+    {
+      "name": " كسيس محمد",
+      "module": "Algèbre 2",
+      "type": "مُحاضر",
+      "email": "m.kecies@univ-mila.dz",
+      "email2": "m.kecies@centre-univ-mila.dz"
+    },
+    {
+      "name": "مخيلف خديجة",
+      "module": "Logique mathématique",
+      "type": "مُحاضرة",
+      "email": "khedidja.mekhilef@univ-constantine2.dz"
+    },
+    {
+      "name": "صوادق رزيقة",
+      "module": "Electronique fondamentale",
+      "type": "مُحاضرة",
+      "email": "r.souadek@univ-mila.dz",
+      "email2": "r.souadek@centre-univ-mila.dz"
+    },
+    {
+      "name": "حاجي عثمان",
+      "module": "Introduction à l'intelligence artificielle",
+      "type": "مُحاضر",
+      "email": "a.hadji@centre-univ-mila.dz"
+    },
+    {
+      "name": "شريف بن علي ",
+      "module": "ASD 2",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "عصام الذيب",
+      "module": "MS 2",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "بوقطوشة ت",
+      "module": "Analyse 2",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "حداد نبيلة",
+      "module": "Algèbre 2",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "بوعليطة ندى / نوال",
+      "module": "Logique mathématique",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "سميرة بورارة",
+      "module": "Electronique fondamentale",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "جعبوب سليم",
+      "module": "Introduction à l'intelligence artificielle",
+      "type": "أعمال تطبيقية (TP)",
+      "email": ""
+    },
+    {
+      "name": "شلوش ن",
+      "module": "ASD 2",
+      "type": "أعمال تطبيقية (TP)",
+      "email": ""
+    }
+  ],
+  "10": [
+    {
+      "name": "كيموش عبد القادر",
+      "module": "ASD 2",
+      "type": "مُحاضر",
+      "email": "a.kimouche@univ-mila.dz",
+      "email2": "kimouche.abdelkader@gmail.com"
+    },
+    {
+      "name": "عطية مُراد",
+      "module": "MS 2",
+      "type": "مُحاضر",
+      "email": "a.mourad@univ-mila.dz",
+      "email2": "a.mourad@centre-univ-mila.dz"
+    },
+    {
+      "name": "زينب حافي راسو",
+      "module": "Analyse 2",
+      "type": "مُحاضرة",
+      "email": "z.hafirassou@centre-univ-mila.dz",
+      "email2": "zineb.hafi26@gmail.com",
+      "email3": "z.hafirassou@univ-mila.dz"
+    },
+    {
+      "name": " كسيس محمد",
+      "module": "Algèbre 2",
+      "type": "مُحاضر",
+      "email": "m.kecies@univ-mila.dz",
+      "email2": "m.kecies@centre-univ-mila.dz"
+    },
+    {
+      "name": "مخيلف خديجة",
+      "module": "Logique mathématique",
+      "type": "مُحاضرة",
+      "email": "khedidja.mekhilef@univ-constantine2.dz"
+    },
+    {
+      "name": "صوادق رزيقة",
+      "module": "Electronique fondamentale",
+      "type": "مُحاضرة",
+      "email": "r.souadek@univ-mila.dz",
+      "email2": "r.souadek@centre-univ-mila.dz"
+    },
+    {
+      "name": "حاجي عثمان",
+      "module": "Introduction à l'intelligence artificielle",
+      "type": "مُحاضر",
+      "email": "a.hadji@centre-univ-mila.dz"
+    },
+    {
+      "name": "شريف بن علي ",
+      "module": "ASD 2",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "عصام الذيب",
+      "module": "MS 2",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "بوفلغة نبيلة",
+      "module": "Analyse 2",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "حداد نبيلة",
+      "module": "Algèbre 2",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "بوعليطة ندى / نوال",
+      "module": "Logique mathématique",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "رزيقة صوادق",
+      "module": "Electronique fondamentale",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "عسكري ن",
+      "module": "Introduction à l'intelligence artificielle",
+      "type": "أعمال تطبيقية (TP)",
+      "email": ""
+    },
+    {
+      "name": "بخوش إ",
+      "module": "ASD 2",
+      "type": "أعمال تطبيقية (TP)",
+      "email": ""
+    }
+  ],
+  "11": [
+    {
+      "name": "كيموش عبد القادر",
+      "module": "ASD 2",
+      "type": "مُحاضر",
+      "email": "a.kimouche@univ-mila.dz",
+      "email2": "kimouche.abdelkader@gmail.com"
+    },
+    {
+      "name": "عطية مُراد",
+      "module": "MS 2",
+      "type": "مُحاضر",
+      "email": "a.mourad@univ-mila.dz",
+      "email2": "a.mourad@centre-univ-mila.dz"
+    },
+    {
+      "name": "زينب حافي راسو",
+      "module": "Analyse 2",
+      "type": "مُحاضرة",
+      "email": "z.hafirassou@centre-univ-mila.dz",
+      "email2": "zineb.hafi26@gmail.com",
+      "email3": "z.hafirassou@univ-mila.dz"
+    },
+    {
+      "name": " كسيس محمد",
+      "module": "Algèbre 2",
+      "type": "مُحاضر",
+      "email": "m.kecies@univ-mila.dz",
+      "email2": "m.kecies@centre-univ-mila.dz"
+    },
+    {
+      "name": "مخيلف خديجة",
+      "module": "Logique mathématique",
+      "type": "مُحاضرة",
+      "email": "khedidja.mekhilef@univ-constantine2.dz"
+    },
+    {
+      "name": "صوادق رزيقة",
+      "module": "Electronique fondamentale",
+      "type": "مُحاضر",
+      "email": "r.souadek@univ-mila.dz",
+      "email2": "r.souadek@centre-univ-mila.dz"
+    },
+    {
+      "name": "حاجي عثمان",
+      "module": "Introduction à l'intelligence artificielle",
+      "type": "مُحاضر",
+      "email": "a.hadji@centre-univ-mila.dz"
+    },
+    {
+      "name": "سليم جعبوب ",
+      "module": "ASD 2",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "عصام الذيب",
+      "module": "MS 2",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "بوقطوشة ت",
+      "module": "Analyse 2",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "حداد نبيلة",
+      "module": "Algèbre 2",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "طلعي مريم ",
+      "module": "Logique mathématique",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "موراس ن",
+      "module": "Electronique fondamentale",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "زقيوق منيرة",
+      "module": "Introduction à l'intelligence artificielle",
+      "type": "أعمال تطبيقية (TP)",
+      "email": ""
+    },
+    {
+      "name": "غربوج ش",
+      "module": "ASD 2",
+      "type": "أعمال تطبيقية (TP)",
+      "email": ""
+    }
+  ],
+  "12": [
+    {
+      "name": "كيموش عبد القادر",
+      "module": "ASD 2",
+      "type": "مُحاضر",
+      "email": "a.kimouche@univ-mila.dz",
+      "email2": "kimouche.abdelkader@gmail.com"
+    },
+    {
+      "name": "عطية مُراد",
+      "module": "MS 2",
+      "type": "مُحاضر",
+      "email": "a.mourad@univ-mila.dz",
+      "email2": "a.mourad@centre-univ-mila.dz"
+    },
+    {
+      "name": "زينب حافي راسو",
+      "module": "Analyse 2",
+      "type": "مُحاضرة",
+      "email": "z.hafirassou@centre-univ-mila.dz",
+      "email2": "zineb.hafi26@gmail.com",
+      "email3": "z.hafirassou@univ-mila.dz"
+    },
+    {
+      "name": " كسيس محمد",
+      "module": "Algèbre 2",
+      "type": "مُحاضر",
+      "email": "m.kecies@univ-mila.dz",
+      "email2": "m.kecies@centre-univ-mila.dz"
+    },
+    {
+      "name": "مخيلف خديجة",
+      "module": "Logique mathématique",
+      "type": "مُحاضرة",
+      "email": "khedidja.mekhilef@univ-constantine2.dz"
+    },
+    {
+      "name": "صوادق رزيقة",
+      "module": "Electronique fondamentale",
+      "type": "مُحاضرة",
+      "email": "r.souadek@univ-mila.dz",
+      "email2": "r.souadek@centre-univ-mila.dz"
+    },
+    {
+      "name": "حاجي عثمان",
+      "module": "Introduction à l'intelligence artificielle",
+      "type": "مُحاضر",
+      "email": "a.hadji@centre-univ-mila.dz"
+    },
+    {
+      "name": "عديل مرابط",
+      "module": "ASD 2",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "زياني",
+      "module": "MS 2",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "بوفلغة نبيلة",
+      "module": "Analyse 2",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "محمد كسيس",
+      "module": "Algèbre 2",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "مخيلف خديجة",
+      "module": "Logique mathématique",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "بولعظام مريم",
+      "module": "Electronique fondamentale",
+      "type": "أعمال موجهة (TD)",
+      "email": ""
+    },
+    {
+      "name": "عسكري ن",
+      "module": "Introduction à l'intelligence artificielle",
+      "type": "أعمال تطبيقية (TP)",
+      "email": ""
+    },
+    {
+      "name": "بوسنة ن",
+      "module": "ASD 2",
+      "type": "أعمال تطبيقية (TP)",
+      "email": ""
+    }
+  ]
+}

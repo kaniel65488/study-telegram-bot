@@ -7,6 +7,7 @@ import pytz
 import os
 
 TOKEN = os.getenv("TOKEN")
+
 # ===================== حفظ بيانات المستخدمين =====================
 
 USERS_FILE = "users.json"
@@ -32,9 +33,7 @@ async def save_user_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     user_id = str(user.id)
 
-    # جلب صورة البروفايل إن وُجدت
     photos = await context.bot.get_user_profile_photos(user.id)
-
     photo_path = users.get(user_id, {}).get("photo_path")
 
     if photos.total_count > 0:
@@ -58,24 +57,54 @@ async def save_user_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     save_users(users)
 
-# ===================== تحميل الملفات =====================
+# ===================== تحميل حسب المجموعة =====================
 
-def load_schedule():
-    with open("G12/schedule12.json", encoding="utf-8") as f:
+def load_schedule(group):
+    path = f"G{group}/schedule{group}.json"
+
+    if not os.path.exists(path):
+        return None
+
+    with open(path, encoding="utf-8") as f:
         return json.load(f)
 
-def load_teachers():
-    with open("G12/teachers12.json", encoding="utf-8") as f:
-        return json.load(f)
 
-# ===================== مساعدات الوقت =====================
+def load_teachers(group):
+
+    path = "teachers_all_groups.json"
+
+    if not os.path.exists(path):
+        return None
+
+    with open(path, encoding="utf-8") as f:
+        all_data = json.load(f)
+
+    return all_data.get(str(group), [])
+
+
+def get_teachers_by(group, module, lesson_type):
+
+    teachers = load_teachers(group)
+
+    if teachers is None:
+        return []
+
+    key = "محاضر" if lesson_type == "محاضرة" else lesson_type
+
+    result = []
+
+    for t in teachers:
+        if t.get("module") == module and key in t.get("type", ""):
+            result.append(t)
+
+    return result
+
+# ===================== الوقت =====================
 
 def get_day_name(offset=0):
     now = datetime.now(pytz.timezone("Africa/Casablanca"))
     target = now + timedelta(days=offset)
     return target.strftime("%A").lower()
-
-# ===================== تحويل الأيام =====================
 
 AR_DAYS = {
     "sunday": "الأحد",
@@ -98,8 +127,6 @@ REVERSE_DAYS = {
     "الخميس": "thursday"
 }
 
-# ===================== ترتيب المواد =====================
-
 MODULE_ORDER = [
 "Electronique fondamentale","Structure machine 2",
 "Analyse 2","Algèbre 2",
@@ -107,7 +134,7 @@ MODULE_ORDER = [
 "Logique mathématique","Algorithmique et structure de données 2"
 ]
 
-# ===================== تنسيق الحصص =====================
+# ===================== تنسيق =====================
 
 def format_lessons(lessons):
     if not lessons:
@@ -118,18 +145,17 @@ def format_lessons(lessons):
     text = ""
     for l in lessons:
         text += f"""
-\u200F📚  {l['module']}
-\u200F🎯  {l.get('type','')}
-\u200F⏰ من {l['start']} إلى {l['end']}
-\u200F🏫  {l['room']}
-\u200F━━━━━━━━━━━━━━━━
+‏📚  {l['module']}
+‏🎯  {l.get('type','')}
+‏⏰ من {l['start']} إلى {l['end']}
+‏🏫  {l['room']}
+‏━━━━━━━━━━━━━━━━
 """
     return text
 
-# ===================== الدرس الحالي والتالي داخل نفس اليوم =====================
+# ===================== الحالي والتالي =====================
 
-def get_current_and_next_today():
-    schedule = load_schedule()
+def get_current_and_next_today(schedule):
 
     now = datetime.now(pytz.timezone("Africa/Casablanca"))
     day = now.strftime("%A").lower()
@@ -149,123 +175,112 @@ def get_current_and_next_today():
 
     return current, next_lesson
 
+# ===================== اختيار المجموعة =====================
 
-# ===================== أساتذة حسب النوع =====================
-
-def get_teachers_by(module, lesson_type):
-    teachers = load_teachers()
-
-    key = "محاضر" if lesson_type == "محاضرة" else lesson_type
-
-    result = []
-
-    for t in teachers:
-        if t.get("module") == module and key in t.get("type", ""):
-            result.append(t)
-
-    return result
-
-# ===================== الواجهة الرئيسية =====================
-
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def ask_group(update, context):
 
     keyboard = [
-        ["جدول الغد", "جدول اليوم"],
-        ["الدرس التالي", "الدرس الحالي"],
-        ["قائمة الأساتذة", "جدول يوم معين"]
+        ["1", "2", "3"],
+        ["4", "5", "6"],
+        ["7", "8", "9"],
+        ["10", "11", "12"]
     ]
 
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
 
     await update.message.reply_text(
-        "السلام عليكم ورحمة الله تعالى وبركاته.\n اختر ما تُريد :",
+        "🔢 أدخل رقم مجموعتك (1 → 12):",
         reply_markup=reply_markup
     )
 
-# ===================== لوحة المقاييس =====================
+# ===================== القائمة الرئيسية =====================
 
-def build_module_keyboard():
-    buttons = []
-    row = []
+async def show_main_menu(update, context):
 
-    for i, module in enumerate(MODULE_ORDER):
-        row.append(module)
+    keyboard = [
+        ["جدول الغد", "جدول اليوم"],
+        ["الدرس التالي", "الدرس الحالي"],
+        ["قائمة الأساتذة", "جدول يوم معين"],
+        ["تغيير المجموعة"]
+    ]
 
-        if len(row) == 2:
-            buttons.append(row)
-            row = []
+    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
 
-    if row:
-        buttons.append(row)
+    await update.message.reply_text(
+        f"📌 أنت في المجموعة: {context.user_data['group']}\nاختر ما تريد:",
+        reply_markup=reply_markup
+    )
 
-    buttons.append(["رجوع"])
+# ===================== start =====================
 
-    return buttons
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await ask_group(update, context)
 
-
-# ===================== معالجة الرسائل =====================
+# ===================== المعالجة =====================
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await save_user_data(update, context)
 
     text = update.message.text
-    schedule = load_schedule()
 
-    # ===== رجوع =====
-    if text == "رجوع":
+    # اختيار المجموعة أولاً
+    if "group" not in context.user_data:
 
-        stage = context.user_data.get("teacher_stage")
-
-        if stage == "choose_type":
-
-            keyboard = build_module_keyboard()
-
-            context.user_data["teacher_stage"] = "choose_module"
-
-            reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+        if text in [str(i) for i in range(1, 13)]:
+            context.user_data["group"] = text
 
             await update.message.reply_text(
-                "اختر المقياس:",
-                reply_markup=reply_markup
+                f"✅ تم اختيار المجموعة {text}"
             )
-            return
 
-        await start(update, context)
+            return await show_main_menu(update, context)
+
+        await ask_group(update, context)
         return
 
+    group = context.user_data["group"]
 
-    # ===== الدرس الحالي =====
+    if text == "تغيير المجموعة":
+        context.user_data.pop("group", None)
+        await ask_group(update, context)
+        return
+
+    schedule = load_schedule(group)
+
+    if schedule is None:
+        await update.message.reply_text(
+            "❌ لا يوجد جدول لهذه المجموعة بعد"
+        )
+        return
+
+    # الحالي
     if text == "الدرس الحالي":
 
-        current, _ = get_current_and_next_today()
+        current, _ = get_current_and_next_today(schedule)
 
         if current:
-            msg = "📚 أنت الآن في هذه الحصة:\n"
-            msg += format_lessons([current])
+            msg = "📚 أنت الآن في هذه الحصة:\n" + format_lessons([current])
         else:
             msg = "⏳ لا توجد حصة الآن"
 
         await update.message.reply_text(msg)
         return
 
-
-    # ===== الدرس التالي =====
+    # التالي
     if text == "الدرس التالي":
 
-        _, next_lesson = get_current_and_next_today()
+        _, next_lesson = get_current_and_next_today(schedule)
 
         if next_lesson:
-            msg = "➡ الحصة التالية اليوم:\n"
-            msg += format_lessons([next_lesson])
+            msg = "➡ الحصة التالية اليوم:\n" + format_lessons([next_lesson])
         else:
             msg = "✅ لا توجد حصة تالية اليوم"
 
         await update.message.reply_text(msg)
         return
 
-
-    # ===== جدول اليوم =====
+    # اليوم
     if text == "جدول اليوم":
 
         day = get_day_name(0)
@@ -279,8 +294,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(msg)
         return
 
-
-    # ===== جدول الغد =====
+    # الغد
     if text == "جدول الغد":
 
         day = get_day_name(1)
@@ -300,8 +314,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(msg)
         return
 
-
-    # ===== يوم معين =====
+    # يوم معيّن
     if text == "جدول يوم معين":
 
         await update.message.reply_text(
@@ -309,8 +322,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
-
-    # ===== تحقق من اليوم =====
     if text in REVERSE_DAYS:
 
         eng_day = REVERSE_DAYS[text]
@@ -322,85 +333,9 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(msg)
         return
 
-
-    if any(word in text for word in ["أحد","اثنين","ثلاثاء","أربعاء","خميس"]):
-
-        await update.message.reply_text(
-            "❌ خطأ في كتابة اليوم\n\n"
-            "الصيغ الصحيحة هي:\n"
-            "الأحد\nالاثنين\nالثلاثاء\nالأربعاء\nالخميس"
-        )
-        return
-
-
-    # ===== الأساتذة =====
-    if text == "قائمة الأساتذة":
-
-        keyboard = build_module_keyboard()
-
-        context.user_data["teacher_stage"] = "choose_module"
-
-        reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
-
-        await update.message.reply_text(
-            "اختر المقياس:",
-            reply_markup=reply_markup
-        )
-        return
-
-
-    # ===== اختيار مقياس =====
-    if text in MODULE_ORDER:
-
-        keyboard = [
-            ["TD", "محاضرة"],
-            ["رجوع"]
-        ]
-
-        context.user_data["chosen_module"] = text
-        context.user_data["teacher_stage"] = "choose_type"
-
-        reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
-
-        await update.message.reply_text(
-            f"اختر نوع الحصة لمقياس:\n{text}",
-            reply_markup=reply_markup
-        )
-        return
-
-
-    # ===== عرض الأساتذة =====
-    if text in ["TD", "محاضرة"]:
-
-        module = context.user_data.get("chosen_module")
-
-        teachers = get_teachers_by(module, text)
-
-        msg = f"{module} - {text}\n\n"
-
-        if not teachers:
-            msg += "لا يوجد حالياً, سيتم إضافته عمّا قريب بإذن الله تعالى."
-        else:
-            for t in teachers:
-
-                email = t.get("email")
-
-                if not email or email.strip() == "":
-                    email = "سيتم إضافته عمّا قريب..."
-
-                msg += f"""
-👤 {t['name']}
-📧 {email}
-"""
-
-        await update.message.reply_text(msg)
-        return
-
-
     await update.message.reply_text("من فضلك استعمل الأزرار 👇")
 
-
-# ===================== تشغيل Webhook =====================
+# ===================== تشغيل =====================
 
 PORT = int(os.environ.get("PORT", 10000))
 WEBHOOK_URL = os.environ.get("RENDER_EXTERNAL_URL")

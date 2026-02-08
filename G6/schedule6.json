@@ -1,0 +1,135 @@
+﻿//group6.schedule6
+{
+  "sunday": [
+    {
+      "module": "structure machine 2",
+      "start": "09:30",
+      "end": "11:00",
+      "room": "قاعة 18",
+      "type": "TD"
+    },
+    {
+      "module": "Algorithmique et structure de données 2",
+      "start": "12:30",
+      "end": "14:00",
+      "room": "قاعة 18",
+      "type": "TD"
+    },
+    {
+      "module": "Introduction à l'IA",
+      "start": "14:00",
+      "end": "15:30",
+      "room": "مدرج 4",
+      "type": "محاضرة"
+    }
+  ],
+
+  "monday": [
+    {
+      "module": "Electronique fondamentale",
+      "start": "08:00",
+      "end": "09:30",
+      "room": "قاعة 8",
+      "type": "TD"
+    },
+    {
+      "module": "Logique mathématique mathématique",
+      "start": "09:30",
+      "end": "11:00",
+      "room": "مدرج 4",
+      "type": "محاضرة"
+    }
+    {
+      "module": "Analyse 2",
+      "start": "11:00",
+      "end": "12:30",
+      "room": "مدرج 4",
+      "type": "محاضرة"
+    }
+    {
+      "module": "Logique mathématique mathématique",
+      "start": "12:30",
+      "end": "14:00",
+      "room": "قاعة 8",
+      "type": "TD"
+    }
+  ],
+
+  "tuesday": [
+    {
+      "module": "Introduction à l'IA",
+      "start": "11:00",
+      "end": "12:30",
+      "room": "مخبر الإعلام الآلي 2, الشطر 3",
+      "type": "TP"
+    },
+    {
+      "module": "structure machine 2",
+      "start": "12:30",
+      "end": "14:00",
+      "room": "مدرج 4",
+      "type": "محاضرة"
+    },
+    {
+      "module": "Analyse 2",
+      "start": "14:00",
+      "end": "15:30",
+      "room": "مدرج 4",
+      "type": "محاضرة"
+    }
+  ],
+
+  "wednesday": [
+    {
+      "module": "Electronique fondamentale",
+      "start": "08:00",
+      "end": "09:30",
+      "room": "مدرج 4",
+      "type": "محاضرة"
+    },
+
+    {
+      "module": "Algorithmique et structure de données 2",
+      "start": "09:30",
+      "end": "11:00",
+      "room": "مدرج 4",
+      "type": "محاضرة"
+    },
+    {
+      "module": "Analyse 2",
+      "start": "11:00",
+      "end": "12:30",
+      "room": "قاعة 19",
+      "type": "TD"
+    }
+    {
+      "module": "Algorithmique et structure de données 2",
+      "start": "14:00",
+      "end": "17:00",
+      "room": "مخبر الإعلام الآلي 2و1, الشطر 3",
+      "type": "TP",
+      "Duration": "(حصتين (3ساعات"
+    }
+  ],
+
+  "thursday": [
+    {
+      "module": "Algèbre 2",
+      "start": "09:30",
+      "end": "11:00",
+      "room": "مدرج 3 ",
+      "type": "TD"
+    },
+    {
+      "module": "Algèbre 2",
+      "start": "11:00",
+      "end": "12:30",
+      "room": "مدرج 4",
+      "type": "محاضرة"
+    }
+
+  ],
+
+  "friday": [],
+  "saturday": []
+}
