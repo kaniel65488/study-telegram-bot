@@ -111,7 +111,7 @@ def load_schedule(group):
         if f.lower() == base.lower():
             path = os.path.join(folder, f)
 
-            with open(path, encoding="utf-8") as file:
+            with open(path, encoding="utf-8-sig") as file:
                 return json.load(file)
 
     print("SCHEDULE FILE NOT FOUND FOR GROUP", group)
