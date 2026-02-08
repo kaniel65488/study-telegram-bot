@@ -359,36 +359,37 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
-        if text in MODULE_ORDER:
-        
-            # المقاييس اللي عندها TP فقط
-            modules_with_tp = [
-                "Algorithmique et structure de données 2",
-                "Introduction à l'intelligence artificielle"
+
+# 👇 هذا لازم يكون خارج الشرط الأول
+    if text in MODULE_ORDER:
+
+        modules_with_tp = [
+            "Algorithmique et structure de données 2",
+            "Introduction à l'intelligence artificielle"
+        ]
+
+        if text in modules_with_tp:
+            keyboard = [
+                ["TD", "TP"],
+                ["محاضرة"],
+                ["رجوع"]
+            ]
+        else:
+            keyboard = [
+                ["TD", "محاضرة"],
+                ["رجوع"]
             ]
 
-            if text in modules_with_tp:
-                keyboard = [
-                    ["TD", "TP"],
-                    ["محاضرة"],
-                    ["رجوع"]
-                ]
-            else:
-                keyboard = [
-                    ["TD", "محاضرة"],
-                    ["رجوع"]
-                ]
+        context.user_data["chosen_module"] = text
 
-            context.user_data["chosen_module"] = text
+        reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
 
-            reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+        await update.message.reply_text(
+            f"اختر نوع الحصة لمقياس:\n{text}",
+            reply_markup=reply_markup
+        )
+        return
 
-            await update.message.reply_text(
-                f"اختر نوع الحصة لمقياس:\n{text}",
-                reply_markup=reply_markup
-            )
-            return
-    
 
 
     if text in ["TD", "محاضرة", "TP"]: 
