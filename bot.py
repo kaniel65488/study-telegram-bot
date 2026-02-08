@@ -199,6 +199,10 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     text = update.message.text
 
+    if text == "رجوع":
+
+         return await show_main_menu(update, context)
+         
     # ===== اختيار المجموعة أول مرة =====
     if "group" not in context.user_data:
 
