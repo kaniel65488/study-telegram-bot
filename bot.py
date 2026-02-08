@@ -62,7 +62,33 @@ async def save_user_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     save_users(users)
 
-# ===================== تحميل البيانات حسب المجموعة =====================
+# ===================== مطابقة ذكية للأسماء =====================
+
+def clean(text):
+    return text.lower()\
+        .replace("é","e")\
+        .replace("è","e")\
+        .replace("à","a")\
+        .replace("  "," ")\
+        .strip()
+
+
+MODULE_ALIASES = {
+    "algorithmique et structure de donnees 2": "algorithmique et structure de donnees 2",
+    "asd 2": "algorithmique et structure de donnees 2",
+
+    "structure machine 2": "structure machine 2",
+    "ms 2": "structure machine 2",
+
+    "introduction à l'ia": "introduction à l'intelligence artificielle",
+    "introduction a l'ia": "introduction à l'intelligence artificielle",
+}
+
+
+def normalize(name):
+    return MODULE_ALIASES.get(clean(name), clean(name))
+
+# ===================== تحميل البيانات =====================
 
 def load_schedule(group):
     path = f"G{group}/schedule{group}.json"
@@ -91,15 +117,26 @@ def get_teachers_by(group, module, lesson_type):
 
     teachers = load_teachers(group)
 
-    if teachers is None:
+    if not teachers:
         return []
 
-    key = "محاضر" if lesson_type == "محاضرة" else lesson_type
+    module_n = normalize(module)
 
     result = []
 
     for t in teachers:
-        if t.get("module") == module and key in t.get("type", ""):
+
+        teacher_module = normalize(t.get("module",""))
+
+        if teacher_module != module_n:
+            continue
+
+        ttype = t.get("type","")
+
+        if lesson_type == "TD" and "TD" in ttype:
+            result.append(t)
+
+        elif lesson_type == "محاضرة" and "محاضر" in ttype:
             result.append(t)
 
     return result
@@ -124,7 +161,7 @@ MODULE_ORDER = [
 "Logique mathématique","Algorithmique et structure de données 2"
 ]
 
-# ===================== تنسيق العرض =====================
+# ===================== تنسيق الدروس =====================
 
 def format_lessons(lessons):
     if not lessons:
@@ -191,7 +228,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await ask_group(update, context)
 
-# ===================== المعالجة الرئيسية =====================
+# ===================== المعالجة =====================
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
@@ -199,9 +236,9 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     text = update.message.text
 
-    
+    if text == "رجوع":
+        return await show_main_menu(update, context)
 
-    # ===== اختيار المجموعة أول مرة =====
     if "group" not in context.user_data:
 
         if text in [str(i) for i in range(1, 13)]:
@@ -219,10 +256,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     group = context.user_data["group"]
-    if text == "رجوع":
 
-         return await show_main_menu(update, context)
-    # ===== تغيير المجموعة =====
     if text == "تغيير المجموعة":
         context.user_data.pop("group", None)
         await ask_group(update, context)
@@ -234,14 +268,12 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("❌ لا يوجد جدول لهذه المجموعة بعد")
         return
 
-    # ===== جدول اليوم =====
     if text == "جدول اليوم":
         day = get_day_name(0)
         msg = "📅 جدول اليوم:\n" + format_lessons(schedule.get(day, []))
         await update.message.reply_text(msg)
         return
 
-    # ===== جدول الغد =====
     if text == "جدول الغد":
         day = get_day_name(1)
 
@@ -253,7 +285,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text(msg)
         return
 
-    # ===== قائمة الأساتذة =====
     if text == "قائمة الأساتذة":
 
         keyboard = []
@@ -279,7 +310,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
-    # ===== اختيار مقياس =====
     if text in MODULE_ORDER:
 
         keyboard = [
@@ -297,7 +327,6 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
         return
 
-    # ===== عرض الأساتذة =====
     if text in ["TD", "محاضرة"]:
 
         module = context.user_data.get("chosen_module")
@@ -310,14 +339,23 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             msg += "لا يوجد حالياً."
         else:
             for t in teachers:
-                msg += f"\n👤 {t['name']}\n📧 {t.get('email','غير متوفر')}\n"
+
+                emails = []
+
+                for k in ["email","email1","email2","email3"]:
+                    if t.get(k) and t[k] != "/":
+                        emails.append(t[k])
+
+                email_text = "\n".join(emails) if emails else "غير متوفر"
+
+                msg += f"\n👤 {t['name']}\n📧 {email_text}\n"
 
         await update.message.reply_text(msg)
         return
 
     await update.message.reply_text("من فضلك استعمل الأزرار 👇")
 
-# ===================== تشغيل البوت =====================
+# ===================== تشغيل =====================
 
 PORT = int(os.environ.get("PORT", 10000))
 WEBHOOK_URL = os.environ.get("RENDER_EXTERNAL_URL")
