@@ -171,18 +171,22 @@ def format_lessons(lessons):
     if not lessons:
         return "✅ لا توجد حصص في هذا اليوم."
 
-    lessons = sorted(lessons, key=lambda x: x["start"])
+    try:
+        lessons = sorted(lessons, key=lambda x: x.get("start",""))
+    except:
+        pass   # إذا كاين خطأ في الوقت ما نطيحوش
 
     text = ""
     for l in lessons:
         text += f"""
-📚  {l['module']}
+📚  {l.get('module','')}
 🎯  {l.get('type','')}
-⏰ من {l['start']} إلى {l['end']}
-🏫  {l['room']}
+⏰ من {l.get('start','?')} إلى {l.get('end','?')}
+🏫  {l.get('room','')}
 ━━━━━━━━━━━━━━━━
 """
     return text
+
 
 # ===================== اختيار المجموعة =====================
 
