@@ -362,33 +362,43 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # 👇 هذا لازم يكون خارج الشرط الأول
     if text in MODULE_ORDER:
-
-        modules_with_tp = [
-            "Algorithmique et structure de données 2",
-            "Introduction à l'intelligence artificielle"
-        ]
-
-        if text in modules_with_tp:
+    
+        asd_module = "Algorithmique et structure de données 2"
+        ia_module = "Introduction à l'intelligence artificielle"
+    
+        # ===== حالة IA: بلا TD =====
+        if text == ia_module:
+            keyboard = [
+                ["TP"],
+                ["محاضرة"],
+                ["رجوع"]
+            ]
+    
+        # ===== حالة ASD2: فيها الكل =====
+        elif text == asd_module:
             keyboard = [
                 ["TD", "TP"],
                 ["محاضرة"],
                 ["رجوع"]
             ]
+    
+        # ===== باقي المواد: بلا TP =====
         else:
             keyboard = [
                 ["TD", "محاضرة"],
                 ["رجوع"]
             ]
-
+    
         context.user_data["chosen_module"] = text
-
+    
         reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
-
+    
         await update.message.reply_text(
             f"اختر نوع الحصة لمقياس:\n{text}",
             reply_markup=reply_markup
         )
         return
+
 
 
 
