@@ -1,0 +1,12 @@
+# ===== Secrets =====
+credentials.json
+.env
+service-account.json
+google_credentials.json
+
+# ===== Python =====
+__pycache__/
+*.pyc
+
+# ===== System =====
+.DS_Store
