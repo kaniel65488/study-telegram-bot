@@ -232,7 +232,7 @@ def format_lessons(lessons):
         text += f"""
 🔹 {l.get('module','')}
 🎯 {l.get('type','')}
-⏰ {l.get('start','?')} ← {l.get('end','?')}
+⏰ {l.get('start','?')} → {l.get('end','?')}
 🏫 القاعة: {l.get('room','')}
 
 ━━━━━━━━━━━━━━━━
@@ -251,11 +251,11 @@ async def ask_group(update, context):
         ["7", "8", "9"],
         ["10", "11", "12"]
     ]
-
+ 
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
 
     await update.message.reply_text(
-        "🔢 أدخل رقم مجموعتك (1 → 12):",
+        "🔢 أدخل رقم مجموعتك (1 ← 12):",
         reply_markup=reply_markup
     )
 
