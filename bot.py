@@ -14,6 +14,7 @@ TOKEN = os.getenv("TOKEN")
 # ===================== ملفات المستخدمين =====================
 
 def get_sheet():
+<<<<<<< HEAD
     
     creds_json = os.getenv("GOOGLE_CREDENTIALS")
 
@@ -23,6 +24,12 @@ def get_sheet():
 
     creds_dict = json.loads(creds_json)
     
+=======
+    creds_json = os.getenv("GOOGLE_CREDENTIALS")
+
+    creds_dict = json.loads(creds_json)
+
+>>>>>>> 7e7b77c7016d2ec6d817cdb38c6d90919674976f
     scope = [
         "https://spreadsheets.google.com/feeds",
         "https://www.googleapis.com/auth/drive"
@@ -38,6 +45,7 @@ def get_sheet():
     sheet = client.open("study_bot_users").sheet1
     return sheet
 
+<<<<<<< HEAD
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
@@ -85,6 +93,8 @@ def upload_photo_to_drive(local_path, user_id):
         print("DRIVE UPLOAD ERROR:", e)
         return ""
 
+=======
+>>>>>>> 7e7b77c7016d2ec6d817cdb38c6d90919674976f
 USERS_FILE = "users.json"
 PHOTOS_DIR = "profile_photos"
 
@@ -115,6 +125,7 @@ async def save_user_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+<<<<<<< HEAD
     # ===== معلومات إضافية =====
     device = "unknown"
     lang = user.language_code or "unknown"
@@ -149,10 +160,20 @@ async def save_user_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if str(row["telegram_id"]) == str(user.id):
 
             sheet.update(f"B{i}:K{i}", [[
+=======
+    # البحث هل المستخدم مسجل من قبل
+    records = sheet.get_all_records()
+
+    for i, row in enumerate(records, start=2):
+        if str(row["telegram_id"]) == str(user.id):
+
+            sheet.update(f"B{i}:G{i}", [[
+>>>>>>> 7e7b77c7016d2ec6d817cdb38c6d90919674976f
                 user.username or "",
                 user.first_name or "",
                 user.last_name or "",
                 group or "",
+<<<<<<< HEAD
                 row.get("first_seen", now),
                 now,
                 photo_url,
@@ -163,6 +184,14 @@ async def save_user_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
             return
 
     # ===== مستخدم جديد =====
+=======
+                row["first_seen"],
+                now
+            ]])
+            return
+
+    # مستخدم جديد
+>>>>>>> 7e7b77c7016d2ec6d817cdb38c6d90919674976f
     sheet.append_row([
         user.id,
         user.username or "",
@@ -170,6 +199,7 @@ async def save_user_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
         user.last_name or "",
         group or "",
         now,
+<<<<<<< HEAD
         now,
         photo_url,
         last_action,
@@ -177,6 +207,10 @@ async def save_user_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
         lang
     ])
 
+=======
+        now
+    ])
+>>>>>>> 7e7b77c7016d2ec6d817cdb38c6d90919674976f
 
 
 # ===================== مطابقة ذكية للأسماء =====================
