@@ -38,7 +38,6 @@ def get_sheet():
     return sheet
 
 
-<<<<<<< HEAD
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
