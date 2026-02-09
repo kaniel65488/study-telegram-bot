@@ -1,6 +1,9 @@
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 
+from oauth2client.service_account import ServiceAccountCredentials
+import gspread
+
 import json
 from datetime import datetime, timedelta
 import pytz
@@ -9,6 +12,78 @@ import os
 TOKEN = os.getenv("TOKEN")
 
 # ===================== ملفات المستخدمين =====================
+
+def get_sheet():
+    
+    creds_json = os.getenv("GOOGLE_CREDENTIALS")
+
+    if not creds_json:
+        print("❌ GOOGLE_CREDENTIALS NOT FOUND")
+        return None
+
+    creds_dict = json.loads(creds_json)
+    
+    scope = [
+        "https://spreadsheets.google.com/feeds",
+        "https://www.googleapis.com/auth/drive"
+    ]
+
+    creds = ServiceAccountCredentials.from_json_keyfile_dict(
+        creds_dict,
+        scope
+    )
+
+    client = gspread.authorize(creds)
+
+    sheet = client.open("study_bot_users").sheet1
+    return sheet
+
+from googleapiclient.discovery import build
+from googleapiclient.http import MediaFileUpload
+
+def get_drive_service():
+    creds_json = os.getenv("GOOGLE_CREDENTIALS")
+    creds_dict = json.loads(creds_json)
+
+    creds = ServiceAccountCredentials.from_json_keyfile_dict(
+        creds_dict,
+        ["https://www.googleapis.com/auth/drive"]
+    )
+
+    return build('drive', 'v3', credentials=creds)
+
+
+def upload_photo_to_drive(local_path, user_id):
+
+    try:
+        service = get_drive_service()
+
+        file_metadata = {
+            'name': f"{user_id}.jpg",
+            'parents': []   # خليها root
+        }
+
+        media = MediaFileUpload(local_path, mimetype='image/jpeg')
+
+        file = service.files().create(
+            body=file_metadata,
+            media_body=media,
+            fields='id'
+        ).execute()
+
+        file_id = file.get('id')
+
+        # نخلي الصورة public
+        service.permissions().create(
+            fileId=file_id,
+            body={"type": "anyone", "role": "reader"}
+        ).execute()
+
+        return f"https://drive.google.com/uc?id={file_id}"
+
+    except Exception as e:
+        print("DRIVE UPLOAD ERROR:", e)
+        return ""
 
 USERS_FILE = "users.json"
 PHOTOS_DIR = "profile_photos"
@@ -32,35 +107,77 @@ def save_users(data):
 async def save_user_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     user = update.effective_user
-    users = load_users()
-
-    user_id = str(user.id)
-
-    photos = await context.bot.get_user_profile_photos(user.id)
-    photo_path = users.get(user_id, {}).get("photo_path")
-
-    if photos.total_count > 0:
-        file = await photos.photos[0][-1].get_file()
-        photo_path = f"{PHOTOS_DIR}/{user_id}.jpg"
-        await file.download_to_drive(photo_path)
-
     group = context.user_data.get("group")
 
-    users[user_id] = {
-        "telegram_id": user.id,
-        "username": user.username,
-        "first_name": user.first_name,
-        "last_name": user.last_name,
-        "photo_path": photo_path,
-        "group": group,
-        "last_seen": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-        "first_seen": users.get(user_id, {}).get(
-            "first_seen",
-            datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        )
-    }
+    sheet = get_sheet()
+    if not sheet:
+        return
 
-    save_users(users)
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    # ===== معلومات إضافية =====
+    device = "unknown"
+    lang = user.language_code or "unknown"
+
+    if update.message:
+        device = update.message.via_bot or "telegram"
+
+    last_action = update.message.text if update.message else "start"
+
+    # ===== تحميل الصورة =====
+    photo_url = ""
+
+    try:
+        photos = await context.bot.get_user_profile_photos(user.id)
+
+        if photos.total_count > 0:
+            file = await photos.photos[0][-1].get_file()
+
+            local = f"profile_photos/{user.id}.jpg"
+            await file.download_to_drive(local)
+
+            photo_url = upload_photo_to_drive(local, user.id)
+
+    except Exception as e:
+        print("PHOTO ERROR:", e)
+
+    # ===== البحث في الشيت =====
+    records = sheet.get_all_records()
+
+    for i, row in enumerate(records, start=2):
+
+        if str(row["telegram_id"]) == str(user.id):
+
+            sheet.update(f"B{i}:K{i}", [[
+                user.username or "",
+                user.first_name or "",
+                user.last_name or "",
+                group or "",
+                row.get("first_seen", now),
+                now,
+                photo_url,
+                last_action,
+                device,
+                lang
+            ]])
+            return
+
+    # ===== مستخدم جديد =====
+    sheet.append_row([
+        user.id,
+        user.username or "",
+        user.first_name or "",
+        user.last_name or "",
+        group or "",
+        now,
+        now,
+        photo_url,
+        last_action,
+        device,
+        lang
+    ])
+
+
 
 # ===================== مطابقة ذكية للأسماء =====================
 
