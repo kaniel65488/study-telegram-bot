@@ -14,8 +14,6 @@ TOKEN = os.getenv("TOKEN")
 # ===================== ملفات المستخدمين =====================
 
 def get_sheet():
-<<<<<<< HEAD
-    
     creds_json = os.getenv("GOOGLE_CREDENTIALS")
 
     if not creds_json:
@@ -23,13 +21,7 @@ def get_sheet():
         return None
 
     creds_dict = json.loads(creds_json)
-    
-=======
-    creds_json = os.getenv("GOOGLE_CREDENTIALS")
 
-    creds_dict = json.loads(creds_json)
-
->>>>>>> 7e7b77c7016d2ec6d817cdb38c6d90919674976f
     scope = [
         "https://spreadsheets.google.com/feeds",
         "https://www.googleapis.com/auth/drive"
@@ -44,6 +36,7 @@ def get_sheet():
 
     sheet = client.open("study_bot_users").sheet1
     return sheet
+
 
 <<<<<<< HEAD
 from googleapiclient.discovery import build
@@ -113,11 +106,10 @@ def save_users(data):
     with open(USERS_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
 
-
-async def save_user_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def save_user_data(update: Update, context):
 
     user = update.effective_user
-    group = context.user_data.get("group")
+    group = context.user_data.get("group", "")
 
     sheet = get_sheet()
     if not sheet:
@@ -125,92 +117,32 @@ async def save_user_data(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-<<<<<<< HEAD
-    # ===== معلومات إضافية =====
-    device = "unknown"
-    lang = user.language_code or "unknown"
-
-    if update.message:
-        device = update.message.via_bot or "telegram"
-
-    last_action = update.message.text if update.message else "start"
-
-    # ===== تحميل الصورة =====
-    photo_url = ""
-
-    try:
-        photos = await context.bot.get_user_profile_photos(user.id)
-
-        if photos.total_count > 0:
-            file = await photos.photos[0][-1].get_file()
-
-            local = f"profile_photos/{user.id}.jpg"
-            await file.download_to_drive(local)
-
-            photo_url = upload_photo_to_drive(local, user.id)
-
-    except Exception as e:
-        print("PHOTO ERROR:", e)
-
-    # ===== البحث في الشيت =====
     records = sheet.get_all_records()
 
-    for i, row in enumerate(records, start=2):
-
-        if str(row["telegram_id"]) == str(user.id):
-
-            sheet.update(f"B{i}:K{i}", [[
-=======
-    # البحث هل المستخدم مسجل من قبل
-    records = sheet.get_all_records()
-
+    # إذا المستخدم موجود → update
     for i, row in enumerate(records, start=2):
         if str(row["telegram_id"]) == str(user.id):
 
             sheet.update(f"B{i}:G{i}", [[
->>>>>>> 7e7b77c7016d2ec6d817cdb38c6d90919674976f
                 user.username or "",
                 user.first_name or "",
                 user.last_name or "",
-                group or "",
-<<<<<<< HEAD
+                group,
                 row.get("first_seen", now),
-                now,
-                photo_url,
-                last_action,
-                device,
-                lang
-            ]])
-            return
-
-    # ===== مستخدم جديد =====
-=======
-                row["first_seen"],
                 now
             ]])
             return
 
-    # مستخدم جديد
->>>>>>> 7e7b77c7016d2ec6d817cdb38c6d90919674976f
+    # إذا مستخدم جديد → append
     sheet.append_row([
         user.id,
         user.username or "",
         user.first_name or "",
         user.last_name or "",
-        group or "",
+        group,
         now,
-<<<<<<< HEAD
-        now,
-        photo_url,
-        last_action,
-        device,
-        lang
-    ])
-
-=======
         now
     ])
->>>>>>> 7e7b77c7016d2ec6d817cdb38c6d90919674976f
 
 
 # ===================== مطابقة ذكية للأسماء =====================
@@ -441,6 +373,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # ===================== المعالجة =====================
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
+
 
     await save_user_data(update, context)
 
