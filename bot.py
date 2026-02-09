@@ -193,6 +193,15 @@ def get_day_name(offset=0):
     target = now + timedelta(days=offset)
     return target.strftime("%A").lower()
 
+AR_DAYS = {
+    "monday": "الإثنين",
+    "tuesday": "الثلاثاء",
+    "wednesday": "الأربعاء",
+    "thursday": "الخميس",
+    "friday": "الجمعة",
+    "saturday": "السبت",
+    "sunday": "الأحد"
+}
 
 WEEKEND_DAYS = {
     "friday": "الجمعة",
@@ -217,27 +226,18 @@ def format_lessons(lessons):
     except:
         pass
 
-    text = "📅 جدول اليوم:\n\n"
+    text = ""
 
     for l in lessons:
-        module = l.get('module','')
-        type_ = l.get('type','')
-        start = l.get('start','?')
-        end = l.get('end','?')
-        room = l.get('room','')
+        text += f"""
+🔹 {l.get('module','')}
+🎯 {l.get('type','')}
+⏰ {l.get('start','?')} ← {l.get('end','?')}
+🏫 القاعة: {l.get('room','')}
 
-        block = f"""
-🔹 {module}
-🎯 {type_}
-⏰ {start} ← {end}
-🏫 القاعة: {room}
 ━━━━━━━━━━━━━━━━
 """
-
-        text += block
-
-    # إجبار الاتجاه من اليمين لليسار
-    return f"\u202B{text}\u202C"
+    return text
 
 
 
@@ -287,10 +287,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data.pop("group", None)
     await ask_group(update, context)
     return
-
-
-    await ask_group(update, context)
-
 # ===================== المعالجة =====================
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -374,18 +370,22 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     if text == "جدول اليوم":
         day = get_day_name(0)
-        msg = "📅 جدول اليوم:\n" + format_lessons(schedule.get(day, []))
+        day_ar = AR_DAYS.get(day, day)
+
+        msg = f"📅 جدول اليوم - {day_ar}:\n\n" + format_lessons(schedule.get(day, []))
         await update.message.reply_text(msg)
         return
 
+
     if text == "جدول الغد":
         day = get_day_name(1)
+        day_ar = AR_DAYS.get(day, day)
 
         if day in WEEKEND_DAYS:
             await update.message.reply_text("💤 يوم راحة")
             return
 
-        msg = "📆 جدول الغد:\n" + format_lessons(schedule.get(day, []))
+        msg = f"📆 جدول الغد - {day_ar}:\n\n" + format_lessons(schedule.get(day, []))
         await update.message.reply_text(msg)
         return
 
