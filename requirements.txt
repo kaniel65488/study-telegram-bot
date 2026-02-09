@@ -1,2 +1,5 @@
 python-telegram-bot[webhooks]>=21.0
 pytz
+gspread
+oauth2client
+google-api-python-client
