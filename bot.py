@@ -271,9 +271,11 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     users = load_users()
     user_id = str(update.effective_user.id)
 
-    if user_id in users and users[user_id].get("group"):
-        context.user_data["group"] = users[user_id]["group"]
-        return await show_main_menu(update, context)
+    # نتجاهل المجموعة المحفوظة عند start
+    context.user_data.pop("group", None)
+    await ask_group(update, context)
+    return
+
 
     await ask_group(update, context)
 
