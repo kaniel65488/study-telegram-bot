@@ -215,18 +215,30 @@ def format_lessons(lessons):
     try:
         lessons = sorted(lessons, key=lambda x: x.get("start",""))
     except:
-        pass   # إذا كاين خطأ في الوقت ما نطيحوش
+        pass
 
-    text = ""
+    text = "📅 جدول اليوم:\n\n"
+
     for l in lessons:
-        text += f"""
-📚  {l.get('module','')}
-🎯  {l.get('type','')}
-⏰ من {l.get('start','?')} إلى {l.get('end','?')}
-🏫  {l.get('room','')}
+        module = l.get('module','')
+        type_ = l.get('type','')
+        start = l.get('start','?')
+        end = l.get('end','?')
+        room = l.get('room','')
+
+        block = f"""
+🔹 {module}
+🎯 {type_}
+⏰ {start} ← {end}
+🏫 القاعة: {room}
 ━━━━━━━━━━━━━━━━
 """
-    return text
+
+        text += block
+
+    # إجبار الاتجاه من اليمين لليسار
+    return f"\u202B{text}\u202C"
+
 
 
 # ===================== اختيار المجموعة =====================
