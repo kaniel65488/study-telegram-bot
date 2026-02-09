@@ -1,113 +1,34 @@
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import Application, CommandHandler, MessageHandler, filters, ContextTypes
 
-from oauth2client.service_account import ServiceAccountCredentials
 import gspread
+from oauth2client.service_account import ServiceAccountCredentials
 
-import json
+import json, os
 from datetime import datetime, timedelta
 import pytz
-import os
 
 TOKEN = os.getenv("TOKEN")
 
-# ===================== ملفات المستخدمين =====================
+# ================= GOOGLE SHEET =================
 
 def get_sheet():
     creds_json = os.getenv("GOOGLE_CREDENTIALS")
-
     if not creds_json:
-        print("❌ GOOGLE_CREDENTIALS NOT FOUND")
         return None
 
-    creds_dict = json.loads(creds_json)
-
-    scope = [
-        "https://spreadsheets.google.com/feeds",
-        "https://www.googleapis.com/auth/drive"
-    ]
-
     creds = ServiceAccountCredentials.from_json_keyfile_dict(
-        creds_dict,
-        scope
+        json.loads(creds_json),
+        ["https://spreadsheets.google.com/feeds","https://www.googleapis.com/auth/drive"]
     )
 
-    client = gspread.authorize(creds)
-
-    sheet = client.open("study_bot_users").sheet1
-    return sheet
+    return gspread.authorize(creds).open("study_bot_users").sheet1
 
 
-from googleapiclient.discovery import build
-from googleapiclient.http import MediaFileUpload
-
-def get_drive_service():
-    creds_json = os.getenv("GOOGLE_CREDENTIALS")
-    creds_dict = json.loads(creds_json)
-
-    creds = ServiceAccountCredentials.from_json_keyfile_dict(
-        creds_dict,
-        ["https://www.googleapis.com/auth/drive"]
-    )
-
-    return build('drive', 'v3', credentials=creds)
-
-
-def upload_photo_to_drive(local_path, user_id):
-
-    try:
-        service = get_drive_service()
-
-        file_metadata = {
-            'name': f"{user_id}.jpg",
-            'parents': []   # خليها root
-        }
-
-        media = MediaFileUpload(local_path, mimetype='image/jpeg')
-
-        file = service.files().create(
-            body=file_metadata,
-            media_body=media,
-            fields='id'
-        ).execute()
-
-        file_id = file.get('id')
-
-        # نخلي الصورة public
-        service.permissions().create(
-            fileId=file_id,
-            body={"type": "anyone", "role": "reader"}
-        ).execute()
-
-        return f"https://drive.google.com/uc?id={file_id}"
-
-    except Exception as e:
-        print("DRIVE UPLOAD ERROR:", e)
-        return ""
-
-=======
-USERS_FILE = "users.json"
-PHOTOS_DIR = "profile_photos"
-
-if not os.path.exists(PHOTOS_DIR):
-    os.makedirs(PHOTOS_DIR)
-
-
-def load_users():
-    if not os.path.exists(USERS_FILE):
-        return {}
-    with open(USERS_FILE, encoding="utf-8") as f:
-        return json.load(f)
-
-
-def save_users(data):
-    with open(USERS_FILE, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=4)
-
-async def save_user_data(update: Update, context):
+async def save_user_data(update, context):
 
     user = update.effective_user
-    group = context.user_data.get("group", "")
+    group = context.user_data.get("group","")
 
     sheet = get_sheet()
     if not sheet:
@@ -117,7 +38,6 @@ async def save_user_data(update: Update, context):
 
     records = sheet.get_all_records()
 
-    # إذا المستخدم موجود → update
     for i, row in enumerate(records, start=2):
         if str(row["telegram_id"]) == str(user.id):
 
@@ -131,7 +51,6 @@ async def save_user_data(update: Update, context):
             ]])
             return
 
-    # إذا مستخدم جديد → append
     sheet.append_row([
         user.id,
         user.username or "",
@@ -142,451 +61,173 @@ async def save_user_data(update: Update, context):
         now
     ])
 
-
-# ===================== مطابقة ذكية للأسماء =====================
-
-def clean(text):
-    return text.lower()\
-        .replace("é","e")\
-        .replace("è","e")\
-        .replace("à","a")\
-        .replace("  "," ")\
-        .strip()
-
-
-MODULE_ALIASES = {
-    "algorithmique et structure de donnees 2": "algorithmique et structure de donnees 2",
-    "asd 2": "algorithmique et structure de donnees 2",
-
-    "structure machine 2": "structure machine 2",
-    "ms 2": "structure machine 2",
-
-    "introduction à l'ia": "introduction à l'intelligence artificielle",
-    "introduction a l'ia": "introduction à l'intelligence artificielle",
-}
-
-
-def normalize(name):
-    return MODULE_ALIASES.get(clean(name), clean(name))
-
-# ===================== تحميل البيانات =====================
+# ================= DATA =================
 
 def load_schedule(group):
-
-    base = f"schedule{group}.json"
-
-    # نقلب داخل المجلد بأي شكل كان
-    folder = None
-
-    for d in os.listdir():
-        if d.lower() == f"g{group}".lower():
-            folder = d
-            break
-
-    if not folder:
-        print("FOLDER NOT FOUND FOR GROUP", group)
+    path = f"G{group}/schedule{group}.json"
+    if not os.path.exists(path):
         return None
 
-    # البحث داخل المجلد عن الملف بأي حالة أحرف
-    for f in os.listdir(folder):
-        if f.lower() == base.lower():
-            path = os.path.join(folder, f)
+    return json.load(open(path, encoding="utf-8-sig"))
 
-            with open(path, encoding="utf-8-sig") as file:
-                return json.load(file)
-
-    print("SCHEDULE FILE NOT FOUND FOR GROUP", group)
-    return None
 
 def load_teachers(group):
-
-    try:
-        with open("teachers_all_groups.json", encoding="utf-8-sig") as f:
-            all_data = json.load(f)
-
-        return all_data.get(str(group), [])
-
-    except Exception as e:
-        print("TEACHERS LOAD ERROR:", e)
-        return []
+    data = json.load(open("teachers_all_groups.json", encoding="utf-8-sig"))
+    return data.get(str(group), [])
 
 
+# ================= TIME =================
 
-
-
-def get_teachers_by(group, module, lesson_type):
-
-    teachers = load_teachers(group)
-
-    if not teachers:
-        return []
-
-    module_n = normalize(module)
-
-    result = []
-
-    for t in teachers:
-
-        teacher_module = normalize(t.get("module",""))
-
-        if teacher_module != module_n:
-            continue
-
-        ttype = t.get("type","")
-
-        # تنظيف التشكيل
-        ttype_clean = (
-            ttype
-            .replace("ُ","")
-            .replace("َ","")
-            .replace("ِ","")
-            .lower()
-        )
-
-        # ===== منطق الفرز =====
-
-        if lesson_type == "TD":
-            if "td" in ttype_clean:
-                result.append(t)
-
-        elif lesson_type == "TP":
-            if "tp" in ttype_clean:
-                result.append(t)
-
-        elif lesson_type == "محاضرة":
-            if (
-                "محاضر" in ttype_clean or
-                "محاضرة" in ttype_clean or
-                "cours" in ttype_clean
-            ):
-                result.append(t)
-
-    return result
-
-
-
-
-
-# ===================== الوقت =====================
-
-def get_day_name(offset=0):
+def get_day(offset=0):
     now = datetime.now(pytz.timezone("Africa/Casablanca"))
-    target = now + timedelta(days=offset)
-    return target.strftime("%A").lower()
+    return (now + timedelta(days=offset)).strftime("%A").lower()
 
-AR_DAYS = {
-    "monday": "الإثنين",
-    "tuesday": "الثلاثاء",
-    "wednesday": "الأربعاء",
-    "thursday": "الخميس",
-    "friday": "الجمعة",
-    "saturday": "السبت",
-    "sunday": "الأحد"
+AR = {
+ "monday":"الإثنين","tuesday":"الثلاثاء","wednesday":"الأربعاء",
+ "thursday":"الخميس","friday":"الجمعة","saturday":"السبت","sunday":"الأحد"
 }
 
-WEEKEND_DAYS = {
-    "friday": "الجمعة",
-    "saturday": "السبت"
-}
-
-MODULE_ORDER = [
-"Electronique fondamentale","Structure machine 2",
-"Analyse 2","Algèbre 2",
-"Introduction à l'intelligence artificielle",
-"Logique mathématique","Algorithmique et structure de données 2"
-]
-
-# ===================== تنسيق الدروس =====================
-
-def format_lessons(lessons):
-    if not lessons:
-        return "✅ لا توجد حصص في هذا اليوم."
-
-    try:
-        lessons = sorted(lessons, key=lambda x: x.get("start",""))
-    except:
-        pass
-
-    text = ""
-
-    for l in lessons:
-        text += f"""
-🔹 {l.get('module','')}
-🎯 {l.get('type','')}
-⏰ {l.get('start','?')} → {l.get('end','?')}
-🏫 القاعة: {l.get('room','')}
-
-━━━━━━━━━━━━━━━━
-"""
-    return text
-
-
-
-# ===================== اختيار المجموعة =====================
+# ================= UI =================
 
 async def ask_group(update, context):
-
-    keyboard = [
-        ["1", "2", "3"],
-        ["4", "5", "6"],
-        ["7", "8", "9"],
-        ["10", "11", "12"]
-    ]
- 
-    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
-
+    kb = [["1","2","3"],["4","5","6"],["7","8","9"],["10","11","12"]]
     await update.message.reply_text(
-        "🔢 أدخل رقم مجموعتك (1 ← 12):",
-        reply_markup=reply_markup
+        "اختر مجموعتك:",
+        reply_markup=ReplyKeyboardMarkup(kb, resize_keyboard=True)
     )
 
-# ===================== القائمة الرئيسية =====================
 
-async def show_main_menu(update, context):
-
-    keyboard = [
-        ["جدول الغد", "جدول اليوم"],
-        ["قائمة الأساتذة"],
-        ["تغيير المجموعة"]
-    ]
-
-    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
-
+async def main_menu(update, context):
+    kb = [["جدول اليوم","جدول الغد"],["قائمة الأساتذة"],["تغيير المجموعة"]]
     await update.message.reply_text(
-        f"📌 أنت في المجموعة: {context.user_data['group']}\nاختر ما تريد:",
-        reply_markup=reply_markup
+        f"المجموعة: {context.user_data['group']}",
+        reply_markup=ReplyKeyboardMarkup(kb, resize_keyboard=True)
     )
 
-# ===================== start =====================
+# ================= FLOW =================
 
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+MODULES = [
+"Algèbre 2","Analyse 2","Structure machine 2",
+"Electronique fondamentale","Logique mathématique",
+"Algorithmique et structure de données 2",
+"Introduction à l'intelligence artificielle"
+]
 
-    users = load_users()
-    user_id = str(update.effective_user.id)
-
-    # نتجاهل المجموعة المحفوظة عند start
-    context.user_data.pop("group", None)
-    await ask_group(update, context)
-    return
-# ===================== المعالجة =====================
-
-async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
-
+async def handle(update, context):
 
     await save_user_data(update, context)
 
     text = update.message.text
 
-    stage = context.user_data.get("stage")
-
-   
-    if text == "رجوع":
-
-        stage = context.user_data.get("stage")
-
-        # لو كنا داخل اختيار TD/TP/محاضرة
-        if stage == "choose_type":
-            context.user_data["stage"] = "choose_module"
-
-            keyboard = []
-            row = []
-
-            for module in MODULE_ORDER:
-                row.append(module)
-
-                if len(row) == 2:
-                    keyboard.append(row)
-                    row = []
-
-            if row:
-                keyboard.append(row)
-
-            keyboard.append(["رجوع"])
-
-            reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
-
-            await update.message.reply_text(
-                "اختر المقياس:",
-                reply_markup=reply_markup
-            )
-            return
-
-        # لو كنا داخل قائمة المواد
-        elif stage == "choose_module":
-            context.user_data.pop("stage", None)
-            return await show_main_menu(update, context)
-
-        # افتراضياً
-        return await show_main_menu(update, context)
-
-
-
+    # ----- اختيار المجموعة -----
     if "group" not in context.user_data:
+        if text in [str(i) for i in range(1,13)]:
+            context.user_data["group"]=text
+            return await main_menu(update, context)
+        return await ask_group(update, context)
 
-        if text in [str(i) for i in range(1, 13)]:
-            context.user_data["group"] = text
+    # ----- تغيير مجموعة -----
+    if text=="تغيير المجموعة":
+        context.user_data.pop("group",None)
+        return await ask_group(update, context)
 
-            await update.message.reply_text(
-                f"✅ تم اختيار المجموعة {text}"
-            )
+    group=context.user_data["group"]
 
-            await save_user_data(update, context)
+    # ----- جدول اليوم -----
+    if text=="جدول اليوم":
+        sch=load_schedule(group)
+        day=get_day(0)
+        lessons=sch.get(day,[])
+        return await update.message.reply_text(format_lessons(lessons))
 
-            return await show_main_menu(update, context)
+    # ----- جدول الغد -----
+    if text=="جدول الغد":
+        sch=load_schedule(group)
+        day=get_day(1)
+        lessons=sch.get(day,[])
+        return await update.message.reply_text(format_lessons(lessons))
 
-        await ask_group(update, context)
-        return
-
-    group = context.user_data["group"]
-
-    if text == "تغيير المجموعة":
-        context.user_data.pop("group", None)
-        await ask_group(update, context)
-        return
-
-    schedule = load_schedule(group)
-
-    if schedule is None:
-        await update.message.reply_text("❌ لا يوجد جدول لهذه المجموعة بعد")
-        return
-
-    if text == "جدول اليوم":
-        day = get_day_name(0)
-        day_ar = AR_DAYS.get(day, day)
-
-        msg = f"📅 جدول اليوم - {day_ar}:\n\n" + format_lessons(schedule.get(day, []))
-        await update.message.reply_text(msg)
-        return
-
-
-    if text == "جدول الغد":
-        day = get_day_name(1)
-        day_ar = AR_DAYS.get(day, day)
-
-        if day in WEEKEND_DAYS:
-            await update.message.reply_text("💤 يوم راحة")
-            return
-
-        msg = f"📆 جدول الغد - {day_ar}:\n\n" + format_lessons(schedule.get(day, []))
-        await update.message.reply_text(msg)
-        return
-
-    if text == "قائمة الأساتذة":
-
-        keyboard = []
-        row = []
-
-        for module in MODULE_ORDER:
-            row.append(module)
-
-            if len(row) == 2:
-                keyboard.append(row)
-                row = []
-
-        if row:
-            keyboard.append(row)
-
-        keyboard.append(["رجوع"])
-
-        reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
-
-        await update.message.reply_text(
-            "اختر المقياس:",
-            reply_markup=reply_markup
+    # ----- قائمة الأساتذة -----
+    if text=="قائمة الأساتذة":
+        context.user_data["stage"]="module"
+        kb=[[m] for m in MODULES]+[["رجوع"]]
+        return await update.message.reply_text(
+            "اختر المادة:",
+            reply_markup=ReplyKeyboardMarkup(kb, resize_keyboard=True)
         )
-        context.user_data["stage"] = "choose_module"
-        return
 
+    # ----- اختيار المادة -----
+    if context.user_data.get("stage")=="module":
 
-# 👇 هذا لازم يكون خارج الشرط الأول
-    if text in MODULE_ORDER:
+        context.user_data["module"]=text
+        context.user_data["stage"]="type"
 
-        context.user_data["stage"] = "choose_type"
+        if text=="Algorithmique et structure de données 2":
+            kb=[["TD","TP"],["محاضرة"],["رجوع"]]
 
-        asd_module = "Algorithmique et structure de données 2"
-        ia_module = "Introduction à l'intelligence artificielle"
-    
-        # ===== حالة IA: بلا TD =====
-        if text == ia_module:
-            keyboard = [
-                ["TP"],
-                ["محاضرة"],
-                ["رجوع"]
-            ]
-    
-        # ===== حالة ASD2: فيها الكل =====
-        elif text == asd_module:
-            keyboard = [
-                ["TD", "TP"],
-                ["محاضرة"],
-                ["رجوع"]
-            ]
-    
-        # ===== باقي المواد: بلا TP =====
+        elif text=="Introduction à l'intelligence artificielle":
+            kb=[["TP"],["محاضرة"],["رجوع"]]
+
         else:
-            keyboard = [
-                ["TD", "محاضرة"],
-                ["رجوع"]
-            ]
-    
-        context.user_data["chosen_module"] = text
-    
-        reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
-    
-        await update.message.reply_text(
-            f"اختر نوع الحصة لمقياس:\n{text}",
-            reply_markup=reply_markup
+            kb=[["TD"],["محاضرة"],["رجوع"]]
+
+        return await update.message.reply_text(
+            "نوع الحصة:",
+            reply_markup=ReplyKeyboardMarkup(kb, resize_keyboard=True)
         )
-        return
 
+    # ----- اختيار النوع -----
+    if context.user_data.get("stage")=="type":
 
+        module=context.user_data["module"]
+        teachers=load_teachers(group)
 
+        msg=f"{module} - {text}\n\n"
 
-    if text in ["TD", "محاضرة", "TP"]: 
+        for t in teachers:
+            if t["module"].lower().startswith(module.lower()):
 
-        module = context.user_data.get("chosen_module")
+                if text=="TD" and "TD" in t["type"]:
+                    msg+=f"👤 {t['name']}\n📧 {t.get('email','')}\n\n"
 
-        teachers = get_teachers_by(group, module, text)
+                if text=="TP" and "TP" in t["type"]:
+                    msg+=f"👤 {t['name']}\n📧 {t.get('email','')}\n\n"
 
-        msg = f"{module} - {text}\n\n"
+                if text=="محاضرة" and "محاضر" in t["type"]:
+                    msg+=f"👤 {t['name']}\n📧 {t.get('email','')}\n\n"
 
-        if not teachers:
-            msg += "لا يوجد حالياً."
-        else:
-            for t in teachers:
+        context.user_data.pop("stage",None)
 
-                emails = []
+        return await update.message.reply_text(msg or "لا يوجد")
 
-                for k in ["email","email1","email2","email3"]:
-                    if t.get(k) and t[k] != "/":
-                        emails.append(t[k])
+# ================= RUN =================
 
-                email_text = "\n".join(emails) if emails else "غير متوفر"
+def format_lessons(ls):
+    if not ls: return "لا توجد حصص"
+    txt=""
+    for l in ls:
+        txt+=f"""
+🔹 {l['module']}
+🎯 {l['type']}
+⏰ {l['start']} → {l['end']}
+🏫 {l['room']}
+━━━━━━━━━━
+"""
+    return txt
 
-                msg += f"\n👤 {t['name']}\n📧 {email_text}\n"
-
-        await update.message.reply_text(msg)
-        return
-
-    await update.message.reply_text("من فضلك استعمل الأزرار 👇")
-
-# ===================== تشغيل =====================
-
-PORT = int(os.environ.get("PORT", 10000))
-WEBHOOK_URL = os.environ.get("RENDER_EXTERNAL_URL")
 
 def main():
-    app = Application.builder().token(TOKEN).build()
+    app=Application.builder().token(TOKEN).build()
 
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
+    app.add_handler(CommandHandler("start",ask_group))
+    app.add_handler(MessageHandler(filters.TEXT,handle))
 
     app.run_webhook(
         listen="0.0.0.0",
-        port=PORT,
+        port=int(os.getenv("PORT",10000)),
         url_path=TOKEN,
-        webhook_url=f"{WEBHOOK_URL}/{TOKEN}"
+        webhook_url=f"{os.getenv('RENDER_EXTERNAL_URL')}/{TOKEN}"
     )
 
-if __name__ == "__main__":
+if __name__=="__main__":
     main()
