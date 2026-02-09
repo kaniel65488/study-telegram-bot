@@ -87,7 +87,6 @@ def upload_photo_to_drive(local_path, user_id):
         return ""
 
 =======
->>>>>>> 7e7b77c7016d2ec6d817cdb38c6d90919674976f
 USERS_FILE = "users.json"
 PHOTOS_DIR = "profile_photos"
 
