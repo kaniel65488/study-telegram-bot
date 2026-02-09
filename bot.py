@@ -285,8 +285,49 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     text = update.message.text
 
+    stage = context.user_data.get("stage")
+
+   
     if text == "رجوع":
+
+        stage = context.user_data.get("stage")
+
+        # لو كنا داخل اختيار TD/TP/محاضرة
+        if stage == "choose_type":
+            context.user_data["stage"] = "choose_module"
+
+            keyboard = []
+            row = []
+
+            for module in MODULE_ORDER:
+                row.append(module)
+
+                if len(row) == 2:
+                    keyboard.append(row)
+                    row = []
+
+            if row:
+                keyboard.append(row)
+
+            keyboard.append(["رجوع"])
+
+            reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+
+            await update.message.reply_text(
+                "اختر المقياس:",
+                reply_markup=reply_markup
+            )
+            return
+
+        # لو كنا داخل قائمة المواد
+        elif stage == "choose_module":
+            context.user_data.pop("stage", None)
+            return await show_main_menu(update, context)
+
+        # افتراضياً
         return await show_main_menu(update, context)
+
+
 
     if "group" not in context.user_data:
 
@@ -357,12 +398,15 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "اختر المقياس:",
             reply_markup=reply_markup
         )
+        context.user_data["stage"] = "choose_module"
         return
 
 
 # 👇 هذا لازم يكون خارج الشرط الأول
     if text in MODULE_ORDER:
-    
+
+        context.user_data["stage"] = "choose_type"
+
         asd_module = "Algorithmique et structure de données 2"
         ia_module = "Introduction à l'intelligence artificielle"
     
