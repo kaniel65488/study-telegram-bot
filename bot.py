@@ -41,14 +41,17 @@ async def save_user_data(update, context):
     for i, row in enumerate(records, start=2):
         if str(row["telegram_id"]) == str(user.id):
 
-            sheet.update(f"B{i}:G{i}", [[
-                user.username or "",
-                user.first_name or "",
-                user.last_name or "",
-                group,
-                row.get("first_seen", now),
-                now
-            ]])
+            sheet.update(
+                range_name=f"B{i}:G{i}",
+                values=[[
+                    user.username or "",
+                    user.first_name or "",
+                    user.last_name or "",
+                    group,
+                    row.get("first_seen", now),
+                    now
+                ]]
+            )
             return
 
     sheet.append_row([
@@ -113,6 +116,16 @@ MODULES = [
 "Introduction à l'intelligence artificielle"
 ]
 
+def get_emails(t):
+    emails = []
+
+    for k in ["email","email1","email2","email3"]:
+        if t.get(k) and t[k] != "/":
+            emails.append(t[k])
+
+    return emails
+
+
 async def handle(update, context):
 
     await save_user_data(update, context)
@@ -122,54 +135,60 @@ async def handle(update, context):
     # ----- اختيار المجموعة -----
     if "group" not in context.user_data:
         if text in [str(i) for i in range(1,13)]:
-            context.user_data["group"]=text
+            context.user_data["group"] = text
             return await main_menu(update, context)
         return await ask_group(update, context)
 
     # ----- تغيير مجموعة -----
-    if text=="تغيير المجموعة":
-        context.user_data.pop("group",None)
+    if text == "تغيير المجموعة":
+        context.user_data.pop("group", None)
         return await ask_group(update, context)
 
-    group=context.user_data["group"]
+    group = context.user_data["group"]
 
     # ----- جدول اليوم -----
-    if text=="جدول اليوم":
-        sch=load_schedule(group)
-        day=get_day(0)
-        lessons=sch.get(day,[])
+    if text == "جدول اليوم":
+        sch = load_schedule(group)
+        if not sch:
+            return await update.message.reply_text("❌ لا يوجد جدول لهذه المجموعة")
+
+        day = get_day(0)
+        lessons = sch.get(day, [])
         return await update.message.reply_text(format_lessons(lessons))
 
     # ----- جدول الغد -----
-    if text=="جدول الغد":
-        sch=load_schedule(group)
-        day=get_day(1)
-        lessons=sch.get(day,[])
+    if text == "جدول الغد":
+        sch = load_schedule(group)
+        if not sch:
+            return await update.message.reply_text("❌ لا يوجد جدول لهذه المجموعة")
+
+        day = get_day(1)
+        lessons = sch.get(day, [])
         return await update.message.reply_text(format_lessons(lessons))
 
     # ----- قائمة الأساتذة -----
-    if text=="قائمة الأساتذة":
-        context.user_data["stage"]="module"
-        kb=[[m] for m in MODULES]+[["رجوع"]]
+    if text == "قائمة الأساتذة":
+        context.user_data["stage"] = "module"
+        kb = [[m] for m in MODULES] + [["رجوع"]]
         return await update.message.reply_text(
             "اختر المادة:",
             reply_markup=ReplyKeyboardMarkup(kb, resize_keyboard=True)
         )
 
     # ----- اختيار المادة -----
-    if context.user_data.get("stage")=="module":
+    if context.user_data.get("stage") == "module":
 
-        context.user_data["module"]=text
-        context.user_data["stage"]="type"
+        context.user_data["module"] = text
+        context.user_data["stage"] = "type"
 
-        if text=="Algorithmique et structure de données 2":
-            kb=[["TD","TP"],["محاضرة"],["رجوع"]]
+        if text == "Algorithmique et structure de données 2":
+            kb = [["TD","TP"],["محاضرة"],["رجوع"]]
 
-        elif text=="Introduction à l'intelligence artificielle":
-            kb=[["TP"],["محاضرة"],["رجوع"]]
+        elif text == "Introduction à l'intelligence artificielle":
+            kb = [["TP"],["محاضرة"],["رجوع"]]
 
         else:
-            kb=[["TD"],["محاضرة"],["رجوع"]]
+            kb = [["TD"],["محاضرة"],["رجوع"]]
 
         return await update.message.reply_text(
             "نوع الحصة:",
@@ -177,36 +196,58 @@ async def handle(update, context):
         )
 
     # ----- اختيار النوع -----
-    if context.user_data.get("stage")=="type":
+    if context.user_data.get("stage") == "type":
 
-        module=context.user_data["module"]
-        teachers=load_teachers(group)
+        module = context.user_data["module"]
+        teachers = load_teachers(group)
 
-        msg=f"{module} - {text}\n\n"
+        msg = f"{module} - {text}\n\n"
 
         for t in teachers:
             if t["module"].lower().startswith(module.lower()):
 
-                if text=="TD" and "TD" in t["type"]:
-                    msg+=f"👤 {t['name']}\n📧 {t.get('email','')}\n\n"
+                if text == "TD" and "TD" in t["type"]:
 
-                if text=="TP" and "TP" in t["type"]:
-                    msg+=f"👤 {t['name']}\n📧 {t.get('email','')}\n\n"
+                    emails = get_emails(t)
+                    email_text = "\n".join(emails) if emails else "غير متوفر"
 
-                if text=="محاضرة" and "محاضر" in t["type"]:
-                    msg+=f"👤 {t['name']}\n📧 {t.get('email','')}\n\n"
+                    msg += f"👤 {t['name']}\n📧 {email_text}\n\n"
 
-        context.user_data.pop("stage",None)
+
+                if text == "TP" and "TP" in t["type"]:
+
+                    emails = get_emails(t)
+                    email_text = "\n".join(emails) if emails else "غير متوفر"
+
+                    msg += f"👤 {t['name']}\n📧 {email_text}\n\n"
+
+
+                if text == "محاضرة" and "محاضر" in t["type"]:
+
+                    emails = get_emails(t)
+                    email_text = "\n".join(emails) if emails else "غير متوفر"
+
+                    msg += f"👤 {t['name']}\n📧 {email_text}\n\n"
+
+
+        context.user_data.pop("stage", None)
 
         return await update.message.reply_text(msg or "لا يوجد")
+
+    # أي إدخال خارج السياق
+    await update.message.reply_text(
+        "❌ اختيار غير صحيح، من فضلك استعمل الأزرار فقط 👇"
+    )
 
 # ================= RUN =================
 
 def format_lessons(ls):
-    if not ls: return "لا توجد حصص"
-    txt=""
+    if not ls:
+        return "لا توجد حصص"
+
+    txt = ""
     for l in ls:
-        txt+=f"""
+        txt += f"""
 🔹 {l['module']}
 🎯 {l['type']}
 ⏰ {l['start']} → {l['end']}
@@ -217,10 +258,10 @@ def format_lessons(ls):
 
 
 def main():
-    app=Application.builder().token(TOKEN).build()
+    app = Application.builder().token(TOKEN).build()
 
-    app.add_handler(CommandHandler("start",ask_group))
-    app.add_handler(MessageHandler(filters.TEXT,handle))
+    app.add_handler(CommandHandler("start", ask_group))
+    app.add_handler(MessageHandler(filters.TEXT, handle))
 
     app.run_webhook(
         listen="0.0.0.0",
